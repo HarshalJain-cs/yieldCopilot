@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CHAIN_NAMES, CHAIN_WARNINGS, type SupportedChainId } from "@/lib/chains-config";
+import { CHAIN_NAMES, CHAIN_WARNINGS, FAUCET_LINKS, type SupportedChainId } from "@/lib/chains-config";
 
 interface ChainSelectorProps {
   selectedChain: SupportedChainId;
@@ -9,15 +9,37 @@ interface ChainSelectorProps {
 }
 
 export function ChainSelector({ selectedChain, onChainChange }: ChainSelectorProps) {
+  const isTestnet = selectedChain === 'sepolia' || selectedChain === 'baseSepolia';
+
   return (
     <div className="flex flex-col gap-2">
       <label className="text-sm font-medium">Select Network:</label>
-      <div className="flex gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <button
+          onClick={() => onChainChange('base')}
+          className={`px-4 py-2 rounded-lg font-medium transition-all ${
+            selectedChain === 'base'
+              ? 'bg-blue-600 text-white'
+              : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
+          }`}
+        >
+          {CHAIN_NAMES.base}
+        </button>
+        <button
+          onClick={() => onChainChange('baseSepolia')}
+          className={`px-4 py-2 rounded-lg font-medium transition-all ${
+            selectedChain === 'baseSepolia'
+              ? 'bg-green-600 text-white'
+              : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
+          }`}
+        >
+          {CHAIN_NAMES.baseSepolia}
+        </button>
         <button
           onClick={() => onChainChange('mainnet')}
           className={`px-4 py-2 rounded-lg font-medium transition-all ${
             selectedChain === 'mainnet'
-              ? 'bg-blue-600 text-white'
+              ? 'bg-purple-600 text-white'
               : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
           }`}
         >
@@ -27,11 +49,11 @@ export function ChainSelector({ selectedChain, onChainChange }: ChainSelectorPro
           onClick={() => onChainChange('sepolia')}
           className={`px-4 py-2 rounded-lg font-medium transition-all ${
             selectedChain === 'sepolia'
-              ? 'bg-green-600 text-white'
+              ? 'bg-orange-600 text-white'
               : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
           }`}
         >
-          {CHAIN_NAMES.sepolia} (Testnet)
+          {CHAIN_NAMES.sepolia}
         </button>
       </div>
 
@@ -44,23 +66,23 @@ export function ChainSelector({ selectedChain, onChainChange }: ChainSelectorPro
         {CHAIN_WARNINGS[selectedChain]}
       </div>
 
-      {/* Faucet links for Sepolia */}
-      {selectedChain === 'sepolia' && (
+      {/* Faucet links for Testnets */}
+      {isTestnet && (
         <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
           <p className="text-sm font-medium text-blue-900 dark:text-blue-200 mb-2">
             Need test tokens?
           </p>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <a
-              href="https://www.alchemy.com/faucets/ethereum-sepolia"
+              href={selectedChain === 'sepolia' ? FAUCET_LINKS.sepolia.eth : FAUCET_LINKS.baseSepolia.eth}
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
-              Get Sepolia ETH
+              Get {selectedChain === 'sepolia' ? 'Sepolia' : 'Base Sepolia'} ETH
             </a>
             <a
-              href="https://staging.aave.com/faucet/"
+              href={selectedChain === 'sepolia' ? FAUCET_LINKS.sepolia.aave : FAUCET_LINKS.baseSepolia.aave}
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"

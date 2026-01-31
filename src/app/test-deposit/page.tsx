@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { WalletConnect } from "@/components/wallet-connect";
 import { PoolCardSimple } from "@/components/pool-card-simple";
 import { ChainSelector } from "@/components/chain-selector";
+import { AIChat } from "@/components/ai-chat";
 import { useActiveAccount } from "thirdweb/react";
 import { type SupportedChainId, CHAIN_NAMES } from "@/lib/chains-config";
 
@@ -17,7 +18,7 @@ export default function TestDepositPage() {
   const account = useActiveAccount();
   const [assets, setAssets] = useState<Asset[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedChain, setSelectedChain] = useState<SupportedChainId>('sepolia');
+  const [selectedChain, setSelectedChain] = useState<SupportedChainId>('baseSepolia');
 
   useEffect(() => {
     fetch("/api/yields")
@@ -96,15 +97,22 @@ export default function TestDepositPage() {
         <div className="mt-8 p-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
           <h2 className="text-xl font-bold mb-4 text-blue-900 dark:text-blue-200">How to Test:</h2>
           <ol className="list-decimal list-inside space-y-2 text-blue-800 dark:text-blue-300">
-            <li>Select network (Sepolia = free, Mainnet = real money)</li>
+            <li>Select network (Base Sepolia recommended = free + available, Base = cheap gas ~$0.10)</li>
             <li>Connect wallet</li>
             <li>Switch to correct network in your wallet</li>
-            <li>Choose a pool</li>
-            <li>Enter amount</li>
-            <li>Click Deposit - sign 2 transactions</li>
-            <li>Check wallet for aTokens!</li>
+            <li>For testnets: Get free tokens from faucet links above</li>
+            <li>Choose a pool (USDC, USDT, or WETH)</li>
+            <li>Enter amount (start with 1-10)</li>
+            <li>Click Deposit - sign 2 transactions (Approve + Supply)</li>
+            <li>Check wallet for aTokens (aUSDC, aWETH, etc)!</li>
           </ol>
+          <p className="mt-4 text-sm text-blue-700 dark:text-blue-300">
+            💡 Tip: Base Mainnet has very low gas fees (~$0.10 vs ~$5 on Ethereum), great for testing with small real amounts!
+          </p>
         </div>
+
+        {/* AI Chat Assistant */}
+        <AIChat />
       </div>
     </div>
   );

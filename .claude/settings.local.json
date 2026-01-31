@@ -4,7 +4,8 @@
       "Bash(test:*)",
       "Bash(wc:*)",
       "Bash(pnpm add:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(pnpm dev)"
     ]
   }
 }
