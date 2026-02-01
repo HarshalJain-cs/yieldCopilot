@@ -71,7 +71,7 @@ export default function GlossaryPage() {
 
   return (
     <div className="min-h-screen relative">
-      <LiquidBackground preset="Plasma" speed={20} />
+      <LiquidBackground preset="Blue" speed={20} />
       <CustomCursor />
       <Navbar />
 
@@ -109,11 +109,10 @@ export default function GlossaryPage() {
                 type="button"
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                  selectedCategory === category.id
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${selectedCategory === category.id
                     ? "bg-[var(--brand-lavender)] text-white"
                     : "bg-[var(--glass-bg)] text-muted-foreground hover:bg-[var(--glass-bg-hover)] border border-[var(--glass-border)]"
-                }`}
+                  }`}
               >
                 {category.label}
               </button>
@@ -162,13 +161,12 @@ export default function GlossaryPage() {
                             </h3>
                             {term.riskLevel && (
                               <span
-                                className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                                  term.riskLevel === "low"
+                                className={`px-2 py-0.5 rounded-full text-xs font-medium ${term.riskLevel === "low"
                                     ? "bg-[var(--accent-mint)] text-green-700"
                                     : term.riskLevel === "medium"
                                       ? "bg-amber-100 text-amber-700"
                                       : "bg-red-100 text-red-700"
-                                }`}
+                                  }`}
                               >
                                 {term.riskLevel} risk
                               </span>

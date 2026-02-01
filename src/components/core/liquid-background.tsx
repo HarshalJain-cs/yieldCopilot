@@ -3,7 +3,7 @@
 import { useRef } from "react";
 
 interface LiquidBackgroundProps {
-  preset?: "Prism" | "Lava" | "Plasma" | "Pulse" | "Vortex" | "Mist";
+  preset?: "Prism" | "Lava" | "Plasma" | "Pulse" | "Vortex" | "Mist" | "Blue";
   speed?: number;
   className?: string;
 }
@@ -39,6 +39,11 @@ const presets = {
     color1: "#050505",
     color2: "#FF66B8",
     color3: "#050505",
+  },
+  Blue: {
+    color1: "#3B82F6",
+    color2: "#1E40AF",
+    color3: "#1E3A8A",
   },
 };
 

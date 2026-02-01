@@ -216,7 +216,7 @@ export default function LearnPage() {
 
   return (
     <div className="min-h-screen relative">
-      <LiquidBackground preset="Plasma" speed={20} />
+      <LiquidBackground preset="Blue" speed={20} />
       <CustomCursor />
       <Navbar />
 
@@ -233,11 +233,10 @@ export default function LearnPage() {
               });
             }}
             aria-label={`Go to lesson ${index + 1}`}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
-              activeCard === index
+            className={`w-3 h-3 rounded-full transition-all duration-300 ${activeCard === index
                 ? "bg-[var(--brand-lavender)] scale-125"
                 : "bg-[var(--glass-border)] hover:bg-[var(--brand-lavender)]/50"
-            }`}
+              }`}
           />
         ))}
       </div>
@@ -357,11 +356,10 @@ export default function LearnPage() {
                         {educationCards.map((_, i) => (
                           <div
                             key={i}
-                            className={`w-8 h-1 rounded-full ${
-                              i <= index
+                            className={`w-8 h-1 rounded-full ${i <= index
                                 ? "bg-[var(--brand-lavender)]"
                                 : "bg-[var(--glass-border)]"
-                            }`}
+                              }`}
                           />
                         ))}
                       </div>

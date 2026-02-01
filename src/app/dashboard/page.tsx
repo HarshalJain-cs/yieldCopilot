@@ -108,7 +108,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen relative">
-      <LiquidBackground preset="Plasma" />
+      <LiquidBackground preset="Blue" />
       <CustomCursor />
       <Navbar />
 
@@ -146,19 +146,19 @@ export default function DashboardPage() {
           {loading
             ? [...Array(4)].map((_, i) => <AssetCardSkeleton key={i} />)
             : featuredAssets.map((asset) => {
-                const data = getFeaturedAssetData(asset.symbol);
-                return (
-                  <AssetCard
-                    key={asset.symbol}
-                    symbol={asset.symbol}
-                    name={asset.name}
-                    supplyAPY={data?.supplyAPY ?? 0}
-                    change24h={(Math.random() - 0.3) * 1}
-                    riskLevel={asset.riskLevel}
-                    color={asset.color}
-                  />
-                );
-              })}
+              const data = getFeaturedAssetData(asset.symbol);
+              return (
+                <AssetCard
+                  key={asset.symbol}
+                  symbol={asset.symbol}
+                  name={asset.name}
+                  supplyAPY={data?.supplyAPY ?? 0}
+                  change24h={(Math.random() - 0.3) * 1}
+                  riskLevel={asset.riskLevel}
+                  color={asset.color}
+                />
+              );
+            })}
 
           {/* Quick Actions */}
           <QuickActions />
