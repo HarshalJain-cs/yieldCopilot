@@ -4,7 +4,6 @@ import {
   createContext,
   type ReactNode,
   useContext,
-  useEffect,
   useState,
 } from "react";
 
@@ -26,60 +25,22 @@ export function useWallet() {
   return context;
 }
 
+// Demo wallet address for display
+const DEMO_WALLET_ADDRESS = "0x742d35Cc6634C0532925a3b844Bc9e7595f2bD73";
+
 export function WalletProvider({ children }: { children: ReactNode }) {
   const [address, setAddress] = useState<string | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
 
-  // Check for existing connection on mount
-  useEffect(() => {
-    const checkConnection = async () => {
-      if (typeof window !== "undefined" && window.ethereum) {
-        try {
-          const accounts = (await window.ethereum.request({
-            method: "eth_accounts",
-          })) as string[];
-          if (accounts && accounts.length > 0) {
-            setAddress(accounts[0]);
-          }
-        } catch (error) {
-          console.error("Failed to check wallet connection:", error);
-        }
-      }
-    };
-    checkConnection();
-
-    // Listen for account changes
-    if (typeof window !== "undefined" && window.ethereum) {
-      window.ethereum.on("accountsChanged", (...args: unknown[]) => {
-        const accounts = args[0] as string[];
-        if (accounts && accounts.length > 0) {
-          setAddress(accounts[0]);
-        } else {
-          setAddress(null);
-        }
-      });
-    }
-  }, []);
-
+  // Demo connect - simulates wallet connection
   const connect = async () => {
-    if (typeof window === "undefined" || !window.ethereum) {
-      alert("Please install MetaMask or another Web3 wallet to connect!");
-      return;
-    }
-
     setIsConnecting(true);
-    try {
-      const accounts = (await window.ethereum.request({
-        method: "eth_requestAccounts",
-      })) as string[];
-      if (accounts && accounts.length > 0) {
-        setAddress(accounts[0]);
-      }
-    } catch (error) {
-      console.error("Failed to connect wallet:", error);
-    } finally {
-      setIsConnecting(false);
-    }
+
+    // Simulate connection delay for realistic UX
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    setAddress(DEMO_WALLET_ADDRESS);
+    setIsConnecting(false);
   };
 
   const disconnect = () => {
@@ -117,6 +78,7 @@ export function WalletConnectButton() {
         disabled
         className="flex items-center gap-2 bg-[var(--brand-lavender-deep)] text-white rounded-full px-5 py-2.5 font-medium opacity-70 text-sm cursor-wait"
       >
+        <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
         Connecting...
       </button>
     );
@@ -129,6 +91,7 @@ export function WalletConnectButton() {
         onClick={disconnect}
         className="flex items-center gap-2 bg-[var(--glass-bg)] backdrop-blur-lg border border-[var(--glass-border)] text-foreground rounded-full px-4 py-2 font-medium hover:bg-[var(--glass-bg-hover)] transition-all text-sm"
       >
+        <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
         {formatAddress(address)}
       </button>
     );
@@ -140,24 +103,7 @@ export function WalletConnectButton() {
       onClick={connect}
       className="flex items-center gap-2 bg-[var(--brand-lavender-deep)] text-white rounded-full px-5 py-2.5 font-medium hover:bg-[var(--brand-lavender)] transition-all text-sm shadow-lg hover:shadow-[var(--glow-lavender)]"
     >
-      Connect
+      Connect Wallet
     </button>
   );
-}
-
-// TypeScript declarations for window.ethereum
-declare global {
-  interface Window {
-    ethereum?: {
-      request: (args: {
-        method: string;
-        params?: unknown[];
-      }) => Promise<unknown>;
-      on: (event: string, callback: (...args: unknown[]) => void) => void;
-      removeListener: (
-        event: string,
-        callback: (...args: unknown[]) => void,
-      ) => void;
-    };
-  }
 }

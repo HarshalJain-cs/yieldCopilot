@@ -4,7 +4,6 @@ import { ArrowRight, BookOpen } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CustomCursor } from "@/components/core/custom-cursor";
-import { LiquidBackground } from "@/components/core/liquid-background";
 import {
   AssetCard,
   AssetCardSkeleton,
@@ -107,28 +106,37 @@ export default function DashboardPage() {
   }));
 
   return (
-    <div className="min-h-screen relative">
-      <LiquidBackground preset="Blue" />
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Animated Gradient Background */}
+      <div className="fixed inset-0 animated-gradient-bg" />
+
+      {/* Floating Blobs for Depth */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="floating-blob floating-blob-1" />
+        <div className="floating-blob floating-blob-2" />
+        <div className="floating-blob floating-blob-3" />
+      </div>
+
       <CustomCursor />
       <Navbar />
 
       <main className="pt-28 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative z-10">
         {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-display-md mb-2">Dashboard</h1>
-          <p className="text-white/70">
+        <div className="mb-8 stagger-item">
+          <h1 className="text-display-md mb-2 text-white drop-shadow-lg">Dashboard</h1>
+          <p className="text-white/80">
             Track your yields and discover new opportunities
           </p>
         </div>
 
         {/* Live On-Chain Stats */}
-        <div className="mb-12 glass-card rounded-2xl p-8">
+        <div className="mb-12 glass-card-premium p-8 stagger-item">
           <LiveChainStats refreshInterval={5000} />
         </div>
 
         {/* Error State */}
         {error && (
-          <div className="mb-8 p-4 rounded-xl bg-red-100 text-red-700 border border-red-200">
+          <div className="mb-8 p-4 rounded-xl bg-red-500/20 text-white border border-red-400/30 backdrop-blur-sm">
             {error}
           </div>
         )}
@@ -136,66 +144,79 @@ export default function DashboardPage() {
         {/* Bento Grid */}
         <div className="bento-grid">
           {/* Portfolio Overview - Large Card */}
-          {loading ? (
-            <PortfolioCardSkeleton />
-          ) : (
-            <PortfolioCard {...portfolioStats} />
-          )}
+          <div className="col-span-2 stagger-item">
+            {loading ? (
+              <PortfolioCardSkeleton />
+            ) : (
+              <PortfolioCard {...portfolioStats} />
+            )}
+          </div>
 
           {/* Featured Asset Cards */}
           {loading
-            ? [...Array(4)].map((_, i) => <AssetCardSkeleton key={i} />)
-            : featuredAssets.map((asset) => {
+            ? [...Array(4)].map((_, i) => (
+              <div key={i} className="stagger-item">
+                <AssetCardSkeleton />
+              </div>
+            ))
+            : featuredAssets.map((asset, index) => {
               const data = getFeaturedAssetData(asset.symbol);
               return (
-                <AssetCard
-                  key={asset.symbol}
-                  symbol={asset.symbol}
-                  name={asset.name}
-                  supplyAPY={data?.supplyAPY ?? 0}
-                  change24h={(Math.random() - 0.3) * 1}
-                  riskLevel={asset.riskLevel}
-                  color={asset.color}
-                />
+                <div key={asset.symbol} className="stagger-item">
+                  <AssetCard
+                    symbol={asset.symbol}
+                    name={asset.name}
+                    supplyAPY={data?.supplyAPY ?? 0}
+                    change24h={(Math.random() - 0.3) * 1}
+                    riskLevel={asset.riskLevel}
+                    color={asset.color}
+                  />
+                </div>
               );
             })}
 
           {/* Quick Actions */}
-          <QuickActions />
+          <div className="stagger-item">
+            <QuickActions />
+          </div>
 
           {/* Market Overview */}
-          <MarketOverview assets={marketAssets} loading={loading} />
+          <div className="col-span-2 lg:col-span-2 stagger-item">
+            <MarketOverview assets={marketAssets} loading={loading} />
+          </div>
 
           {/* Education Peek */}
-          <GlassCard className="col-span-2 lg:col-span-1 p-6">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[var(--accent-lavender)] flex items-center justify-center flex-shrink-0">
-                <BookOpen className="w-6 h-6 text-[var(--brand-lavender-deep)]" />
+          <div className="stagger-item">
+            <GlassCard className="col-span-2 lg:col-span-1 p-6 h-full">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+                  <BookOpen className="w-6 h-6 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg mb-1 text-white">New to DeFi?</h3>
+                  <p className="text-sm text-white/70 mb-4">
+                    Learn about yields, risks, and strategies with our interactive
+                    guides.
+                  </p>
+                  <Link
+                    href="/learn"
+                    className="inline-flex items-center gap-2 text-sm font-medium text-white hover:text-white/80 transition-colors"
+                  >
+                    Start Learning
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
               </div>
-              <div className="flex-1">
-                <h3 className="font-semibold text-lg mb-1">New to DeFi?</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Learn about yields, risks, and strategies with our interactive
-                  guides.
-                </p>
-                <Link
-                  href="/learn"
-                  className="inline-flex items-center gap-2 text-sm font-medium text-[var(--brand-lavender-deep)] hover:text-[var(--brand-lavender)] transition-colors"
-                >
-                  Start Learning
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </div>
-          </GlassCard>
+            </GlassCard>
+          </div>
         </div>
 
         {/* All Assets Table */}
-        <div className="mt-8">
+        <div className="mt-8 stagger-item">
           <GlassCard className="p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold">All Aave Markets</h2>
-              <span className="text-sm text-muted-foreground">
+              <h2 className="text-xl font-semibold text-white">All Aave Markets</h2>
+              <span className="text-sm text-white/60">
                 {yields.length} assets tracked
               </span>
             </div>
@@ -205,7 +226,7 @@ export default function DashboardPage() {
                 {[...Array(5)].map((_, i) => (
                   <div
                     key={i}
-                    className="h-16 bg-muted rounded-lg animate-pulse"
+                    className="h-16 rounded-lg skeleton-shimmer"
                   />
                 ))}
               </div>
@@ -213,7 +234,7 @@ export default function DashboardPage() {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="text-left text-sm text-muted-foreground border-b border-[var(--glass-border)]">
+                    <tr className="text-left text-sm text-white/60 border-b border-white/10">
                       <th className="pb-3 font-medium">Asset</th>
                       <th className="pb-3 font-medium text-right">
                         Supply APY
@@ -231,46 +252,46 @@ export default function DashboardPage() {
                     {yields.slice(0, 15).map((asset) => (
                       <tr
                         key={asset.symbol}
-                        className="border-b border-[var(--glass-border)] hover:bg-[var(--glass-bg)] transition-colors cursor-pointer"
+                        className="border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer"
                       >
                         <td className="py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-[var(--accent-lavender)] flex items-center justify-center text-sm font-bold">
+                            <div className="w-8 h-8 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center text-sm font-bold text-white">
                               {asset.symbol.charAt(0)}
                             </div>
                             <div>
-                              <p className="font-medium">{asset.symbol}</p>
-                              <p className="text-xs text-muted-foreground truncate max-w-[120px]">
+                              <p className="font-medium text-white">{asset.symbol}</p>
+                              <p className="text-xs text-white/50 truncate max-w-[120px]">
                                 {asset.name || asset.symbol}
                               </p>
                             </div>
                           </div>
                         </td>
                         <td className="py-4 text-right">
-                          <span className="text-data text-green-600 font-medium">
+                          <span className="text-data text-green-400 font-medium">
                             {asset.supplyAPY.toFixed(2)}%
                           </span>
                         </td>
                         <td className="py-4 text-right">
-                          <span className="text-data text-red-500 font-medium">
+                          <span className="text-data text-red-400 font-medium">
                             {asset.borrowAPY.toFixed(2)}%
                           </span>
                         </td>
                         <td className="py-4 text-right">
                           <div className="flex items-center justify-end gap-2">
-                            <div className="w-16 h-2 bg-muted rounded-full overflow-hidden">
+                            <div className="w-16 h-2 bg-white/10 rounded-full overflow-hidden">
                               <div
-                                className="h-full bg-[var(--brand-lavender)] rounded-full"
+                                className="h-full bg-gradient-to-r from-purple-400 to-pink-400 rounded-full transition-all duration-1000"
                                 style={{ width: `${asset.utilizationRate}%` }}
                               />
                             </div>
-                            <span className="text-data text-sm">
+                            <span className="text-data text-sm text-white/80">
                               {asset.utilizationRate.toFixed(0)}%
                             </span>
                           </div>
                         </td>
                         <td className="py-4 text-right">
-                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-[var(--accent-lavender)] text-[var(--brand-lavender-deep)]">
+                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-white/10 text-white/80 backdrop-blur-sm">
                             {asset.category}
                           </span>
                         </td>

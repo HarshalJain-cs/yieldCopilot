@@ -33,8 +33,8 @@ export function GlassCard({
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
 
-      const rotateX = ((y - centerY) / centerY) * -8;
-      const rotateY = ((x - centerX) / centerX) * 8;
+      const rotateX = ((y - centerY) / centerY) * -6;
+      const rotateY = ((x - centerX) / centerX) * 6;
 
       setTiltStyle({
         transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`,
@@ -78,33 +78,41 @@ export function GlassCard({
       tabIndex={onClick ? 0 : undefined}
       className={`
         relative overflow-hidden
-        glass-card
-        transition-all duration-200 ease-out
+        glass-card-premium
+        transition-all duration-300 ease-out
         ${onClick ? "cursor-pointer" : ""}
         ${className}
       `}
       style={tiltStyle}
     >
-      {/* Glow effect */}
+      {/* Radial glow that follows mouse */}
       {glow && (
         <div
-          className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+          className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-500 pointer-events-none"
           style={{
-            background: `radial-gradient(circle at ${glowPosition.x}% ${glowPosition.y}%, var(--glow-lavender), transparent 50%)`,
+            background: `radial-gradient(circle at ${glowPosition.x}% ${glowPosition.y}%, rgba(139, 127, 232, 0.4), transparent 50%)`,
           }}
         />
       )}
 
-      {/* Border glow on hover */}
+      {/* Animated border shimmer on hover */}
       <div
-        className="absolute inset-0 rounded-2xl opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+        className="absolute inset-0 rounded-[1.25rem] opacity-0 hover:opacity-100 transition-opacity duration-500 pointer-events-none"
         style={{
-          background: `linear-gradient(135deg, transparent 40%, var(--brand-lavender) 50%, transparent 60%)`,
+          background: `linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%)`,
           backgroundSize: "200% 200%",
           backgroundPosition: `${glowPosition.x}% ${glowPosition.y}%`,
           mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
           maskComposite: "exclude",
           padding: "1px",
+        }}
+      />
+
+      {/* Inner highlight line at top */}
+      <div
+        className="absolute top-0 left-4 right-4 h-px opacity-50 pointer-events-none"
+        style={{
+          background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent)",
         }}
       />
 

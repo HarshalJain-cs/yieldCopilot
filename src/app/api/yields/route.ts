@@ -1,45 +1,212 @@
 /**
- * Yields API Endpoint
+ * Yields API Endpoint - DEMO MODE
  * 
  * GET /api/yields
  * 
- * Returns current APY data for all tracked assets from Aave V3.
+ * Returns demo APY data for display purposes.
  */
 
 import { NextResponse } from 'next/server';
-import { fetchAllAssetsYieldData } from '@/lib/dynamic-fetcher';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
-    try {
-        const assets = await fetchAllAssetsYieldData();
+// Comprehensive demo data for all tracked assets
+const demoAssets = [
+    {
+        symbol: "USDC",
+        name: "USD Coin",
+        address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        category: "Stablecoin",
+        supplyAPY: 5.23,
+        borrowAPY: 6.89,
+        utilizationRate: 59.3,
+        totalSupply: "1500000000",
+        totalBorrow: "890000000",
+        isActive: true,
+    },
+    {
+        symbol: "USDT",
+        name: "Tether",
+        address: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+        category: "Stablecoin",
+        supplyAPY: 4.87,
+        borrowAPY: 6.12,
+        utilizationRate: 57.9,
+        totalSupply: "980000000",
+        totalBorrow: "567000000",
+        isActive: true,
+    },
+    {
+        symbol: "DAI",
+        name: "Dai Stablecoin",
+        address: "0x6B175474E89094C44Da98b954EesE64FFCC1A0F8D",
+        category: "Stablecoin",
+        supplyAPY: 4.56,
+        borrowAPY: 5.78,
+        utilizationRate: 58.2,
+        totalSupply: "650000000",
+        totalBorrow: "378000000",
+        isActive: true,
+    },
+    {
+        symbol: "USDe",
+        name: "Ethena USDe",
+        address: "0x4c9EDD5852cd905f086C759E8383e09bff1E68B3",
+        category: "Stablecoin",
+        supplyAPY: 12.45,
+        borrowAPY: 15.67,
+        utilizationRate: 72.1,
+        totalSupply: "320000000",
+        totalBorrow: "230000000",
+        isActive: true,
+    },
+    {
+        symbol: "crvUSD",
+        name: "Curve USD",
+        address: "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E",
+        category: "Stablecoin",
+        supplyAPY: 6.78,
+        borrowAPY: 8.34,
+        utilizationRate: 63.5,
+        totalSupply: "450000000",
+        totalBorrow: "285000000",
+        isActive: true,
+    },
+    {
+        symbol: "WETH",
+        name: "Wrapped Ether",
+        address: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        category: "ETH & LST",
+        supplyAPY: 2.45,
+        borrowAPY: 3.21,
+        utilizationRate: 60.0,
+        totalSupply: "520000",
+        totalBorrow: "312000",
+        isActive: true,
+    },
+    {
+        symbol: "wstETH",
+        name: "Wrapped stETH",
+        address: "0x7f39c581F595B53c5cb19bD0b3f8dA6c935E2Ca0",
+        category: "ETH & LST",
+        supplyAPY: 1.89,
+        borrowAPY: 2.45,
+        utilizationRate: 45.9,
+        totalSupply: "340000",
+        totalBorrow: "156000",
+        isActive: true,
+    },
+    {
+        symbol: "rETH",
+        name: "Rocket Pool ETH",
+        address: "0xae78736Cd615f374D3085123A210448E74Fc6393",
+        category: "ETH & LST",
+        supplyAPY: 1.67,
+        borrowAPY: 2.12,
+        utilizationRate: 38.4,
+        totalSupply: "180000",
+        totalBorrow: "69000",
+        isActive: true,
+    },
+    {
+        symbol: "WBTC",
+        name: "Wrapped Bitcoin",
+        address: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+        category: "BTC",
+        supplyAPY: 0.45,
+        borrowAPY: 0.89,
+        utilizationRate: 22.7,
+        totalSupply: "15000",
+        totalBorrow: "3400",
+        isActive: true,
+    },
+    {
+        symbol: "cbBTC",
+        name: "Coinbase BTC",
+        address: "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+        category: "BTC",
+        supplyAPY: 0.38,
+        borrowAPY: 0.72,
+        utilizationRate: 18.3,
+        totalSupply: "8500",
+        totalBorrow: "1555",
+        isActive: true,
+    },
+    {
+        symbol: "LINK",
+        name: "Chainlink",
+        address: "0x514910771AF9Ca656af840dff83E8264EcF986CA",
+        category: "Governance",
+        supplyAPY: 0.12,
+        borrowAPY: 0.34,
+        utilizationRate: 26.7,
+        totalSupply: "45000000",
+        totalBorrow: "12000000",
+        isActive: true,
+    },
+    {
+        symbol: "AAVE",
+        name: "Aave Token",
+        address: "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9",
+        category: "Governance",
+        supplyAPY: 0.08,
+        borrowAPY: 0.21,
+        utilizationRate: 13.8,
+        totalSupply: "890000",
+        totalBorrow: "123000",
+        isActive: true,
+    },
+    {
+        symbol: "UNI",
+        name: "Uniswap",
+        address: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+        category: "Governance",
+        supplyAPY: 0.15,
+        borrowAPY: 0.38,
+        utilizationRate: 19.2,
+        totalSupply: "12000000",
+        totalBorrow: "2300000",
+        isActive: true,
+    },
+    {
+        symbol: "MKR",
+        name: "Maker",
+        address: "0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2",
+        category: "Governance",
+        supplyAPY: 0.05,
+        borrowAPY: 0.12,
+        utilizationRate: 8.5,
+        totalSupply: "45000",
+        totalBorrow: "3825",
+        isActive: true,
+    },
+    {
+        symbol: "GHO",
+        name: "Aave GHO",
+        address: "0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f",
+        category: "Stablecoin",
+        supplyAPY: 3.12,
+        borrowAPY: 4.56,
+        utilizationRate: 52.3,
+        totalSupply: "230000000",
+        totalBorrow: "120000000",
+        isActive: true,
+    },
+];
 
-        return NextResponse.json({
-            success: true,
-            timestamp: new Date().toISOString(),
-            count: assets.length,
-            assets: assets.map((asset) => ({
-                symbol: asset.symbol,
-                address: asset.address,
-                category: asset.category,
-                supplyAPY: asset.supplyAPY,
-                borrowAPY: asset.borrowAPY,
-                utilizationRate: asset.utilizationRate,
-                totalSupply: asset.totalSupply,
-                totalBorrow: asset.totalBorrow,
-                isActive: asset.isActive,
-            })),
-        });
-    } catch (error) {
-        console.error('Failed to fetch yields:', error);
-        return NextResponse.json(
-            {
-                success: false,
-                error: 'Failed to fetch yield data',
-                message: error instanceof Error ? error.message : 'Unknown error',
-            },
-            { status: 500 }
-        );
-    }
+export async function GET() {
+    // Add slight randomization to simulate live data feel
+    const assets = demoAssets.map(asset => ({
+        ...asset,
+        supplyAPY: asset.supplyAPY + (Math.random() - 0.5) * 0.1,
+        borrowAPY: asset.borrowAPY + (Math.random() - 0.5) * 0.1,
+        utilizationRate: Math.min(100, Math.max(0, asset.utilizationRate + (Math.random() - 0.5) * 2)),
+    }));
+
+    return NextResponse.json({
+        success: true,
+        timestamp: new Date().toISOString(),
+        count: assets.length,
+        assets: assets.sort((a, b) => b.supplyAPY - a.supplyAPY),
+    });
 }

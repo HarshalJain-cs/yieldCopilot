@@ -117,7 +117,7 @@ export default function LandingPage() {
     <div
       ref={containerRef}
       className="min-h-screen w-full flex flex-col items-center justify-center relative overflow-hidden"
-      style={{ backgroundColor: "#3B82F6" }}
+      style={{ backgroundColor: "#FFF5D1" }}
     >
       {/* Eyes SVG */}
       <div className="relative mb-8">

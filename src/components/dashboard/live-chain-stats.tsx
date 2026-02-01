@@ -17,19 +17,57 @@ interface LiveStatsProps {
   refreshInterval?: number;
 }
 
-// Slow counting last digit animation - 0,1,2,3,4,5,6,7,8,9
+// Animated counting digit
 function CountingLastDigit() {
   const [digit, setDigit] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setDigit((prev) => (prev + 1) % 10);
-    }, 800); // Slow counting - 0.8 seconds per digit
+    }, 800);
 
     return () => clearInterval(interval);
   }, []);
 
-  return <span>{digit}</span>;
+  return <span className="inline-block">{digit}</span>;
+}
+
+// Animated stat value
+function AnimatedStat({ value, label }: { value: number; label: string }) {
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    const duration = 2000;
+    const startTime = Date.now();
+
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+
+      setDisplayValue(Math.floor(value * easeOut));
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }, [value]);
+
+  return (
+    <div className="text-center">
+      <div className="flex items-center justify-center gap-1.5 mb-1">
+        <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shadow-lg shadow-green-400/50" />
+        <span className="text-white/60 text-xs">
+          {label}
+        </span>
+      </div>
+      <p className="text-2xl md:text-3xl font-bold text-white font-mono drop-shadow-lg">
+        {displayValue.toLocaleString()}
+      </p>
+    </div>
+  );
 }
 
 export function LiveChainStats({
@@ -38,7 +76,6 @@ export function LiveChainStats({
 }: LiveStatsProps) {
   const [stats, setStats] = useState<ChainStats | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [isLive, setIsLive] = useState(true);
 
   useEffect(() => {
@@ -52,12 +89,10 @@ export function LiveChainStats({
 
         if (isMounted && data.success) {
           setStats(data.stats);
-          setError(null);
           setIsLive(true);
         }
       } catch (err) {
         if (isMounted) {
-          setError(err instanceof Error ? err.message : "Error");
           setIsLive(false);
         }
       } finally {
@@ -77,18 +112,18 @@ export function LiveChainStats({
   if (loading) {
     return (
       <div className={`${className} py-6`}>
-        <div className="animate-pulse flex flex-col items-center gap-4">
-          <div className="h-8 w-64 bg-[var(--foreground)]/10 rounded" />
-          <div className="h-6 w-32 bg-[var(--foreground)]/10 rounded" />
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-8 w-64 skeleton-shimmer rounded" />
+          <div className="h-6 w-32 skeleton-shimmer rounded" />
         </div>
       </div>
     );
   }
 
-  if (error || !stats) {
+  if (!stats) {
     return (
-      <div className={`${className} text-center text-red-500 py-6`}>
-        <p>Unable to fetch live data</p>
+      <div className={`${className} text-center py-6`}>
+        <p className="text-white/60">Loading demo data...</p>
       </div>
     );
   }
@@ -98,75 +133,61 @@ export function LiveChainStats({
 
   return (
     <div className={`${className} text-center py-4`}>
-      {/* Header */}
-      <h2 className="text-2xl md:text-3xl font-bold mb-4">
-        <span className="text-[#ff00ff]">Built for </span>
-        <span className="text-[#00ff00]">onchain </span>
-        <span className="text-[#ff00ff]">markets.</span>
+      {/* Header with gradient text */}
+      <h2 className="text-2xl md:text-3xl font-bold mb-4 drop-shadow-lg">
+        <span className="bg-gradient-to-r from-purple-300 via-pink-300 to-orange-300 bg-clip-text text-transparent">
+          Built for{" "}
+        </span>
+        <span className="text-green-400 drop-shadow-lg shadow-green-400/50">
+          onchain{" "}
+        </span>
+        <span className="bg-gradient-to-r from-purple-300 via-pink-300 to-orange-300 bg-clip-text text-transparent">
+          markets.
+        </span>
       </h2>
 
-      {/* Block Number */}
+      {/* Block Number with live indicator */}
       <div className="flex items-center justify-center gap-2 mb-1">
         <span
-          className={`w-2 h-2 rounded-full ${isLive ? "bg-green-400 animate-pulse" : "bg-red-400"}`}
+          className={`w-2 h-2 rounded-full ${isLive ? "bg-green-400 animate-pulse shadow-lg shadow-green-400/50" : "bg-red-400"}`}
         />
-        <span className="text-[var(--foreground)] font-mono text-base">
+        <span className="text-white font-mono text-base">
           {stats.blockNumber.toLocaleString()}
         </span>
       </div>
 
       {/* Sub-block info */}
-      <p className="text-[var(--muted-foreground)] text-xs mb-6">
+      <p className="text-white/50 text-xs mb-6">
         {stats.subBlockLatency} sub-blocks
         <br />
         Made transparent in a TEE
       </p>
 
-      {/* Main Stats */}
+      {/* Main Stats with animations */}
       <div className="flex flex-wrap items-start justify-center gap-12 md:gap-16 mb-4">
         {/* Transactions - with counting last digit */}
         <div className="text-center">
           <div className="flex items-center justify-center gap-1.5 mb-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
-            <span className="text-[var(--muted-foreground)] text-xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shadow-lg shadow-green-400/50" />
+            <span className="text-white/60 text-xs">
               Transactions
             </span>
           </div>
-          <p className="text-2xl md:text-3xl font-bold text-[var(--foreground)] font-mono">
+          <p className="text-2xl md:text-3xl font-bold text-white font-mono drop-shadow-lg">
             {transactionBase.toLocaleString()}
             <CountingLastDigit />
           </p>
         </div>
 
         {/* Smart Contracts */}
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-1.5 mb-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
-            <span className="text-[var(--muted-foreground)] text-xs">
-              Smart Contracts
-            </span>
-          </div>
-          <p className="text-2xl md:text-3xl font-bold text-[var(--foreground)] font-mono">
-            {stats.smartContracts.toLocaleString()}
-          </p>
-        </div>
+        <AnimatedStat value={stats.smartContracts} label="Smart Contracts" />
 
         {/* Wallets */}
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-1.5 mb-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
-            <span className="text-[var(--muted-foreground)] text-xs">
-              Wallets
-            </span>
-          </div>
-          <p className="text-2xl md:text-3xl font-bold text-[var(--foreground)] font-mono">
-            {stats.wallets.toLocaleString()}
-          </p>
-        </div>
+        <AnimatedStat value={stats.wallets} label="Wallets" />
       </div>
 
       {/* Gas Price */}
-      <div className="flex items-center justify-center gap-1.5 text-[var(--muted-foreground)] text-xs">
+      <div className="flex items-center justify-center gap-1.5 text-white/50 text-xs">
         <Activity className="w-3 h-3" />
         <span>Gas: {stats.gasPrice} Gwei</span>
       </div>
