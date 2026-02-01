@@ -8,7 +8,7 @@
  * Event: update
  */
 
-import { createClient, RealtimeChannel } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
 import type { AssetYieldData } from "./dynamic-fetcher";
 import { ENV } from "./env";
 
@@ -17,16 +17,17 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 const supabaseAdmin = supabaseServiceKey
   ? createClient(ENV.SUPABASE_URL, supabaseServiceKey, {
-      realtime: {
-        params: {
-          eventsPerSecond: 10,
-        },
+    realtime: {
+      params: {
+        eventsPerSecond: 10,
       },
-    })
+    },
+  })
   : null;
 
 // Channel reference and state
-let yieldsChannel: RealtimeChannel | null = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let yieldsChannel: any = null;
 let reconnectAttempts = 0;
 let isConnected = false;
 let heartbeatInterval: NodeJS.Timeout | null = null;
@@ -67,7 +68,7 @@ export function initBroadcastChannel(): void {
     },
   });
 
-  yieldsChannel.subscribe((status) => {
+  yieldsChannel.subscribe((status: string) => {
     console.log(`[Broadcast] Channel status: ${status}`);
 
     if (status === 'SUBSCRIBED') {
@@ -170,7 +171,7 @@ export async function broadcastYieldUpdate(data: {
     console.warn("[Broadcast] Channel not initialized");
     return;
   }
-  
+
   try {
     await yieldsChannel.send({
       type: "broadcast",
@@ -189,7 +190,7 @@ export async function broadcastYieldUpdate(data: {
         })),
       },
     });
-    
+
     console.log(`[Broadcast] Sent update: ${data.assets.length} assets, trigger: ${data.trigger}`);
   } catch (error) {
     console.error("[Broadcast] Failed to send:", error);
@@ -204,7 +205,7 @@ export async function broadcastAssetUpdate(asset: AssetYieldData, trigger: strin
     console.warn("[Broadcast] Channel not initialized");
     return;
   }
-  
+
   try {
     await yieldsChannel.send({
       type: "broadcast",
@@ -222,7 +223,7 @@ export async function broadcastAssetUpdate(asset: AssetYieldData, trigger: strin
         },
       },
     });
-    
+
     console.log(`[Broadcast] Sent asset update: ${asset.symbol}`);
   } catch (error) {
     console.error("[Broadcast] Failed to send asset update:", error);

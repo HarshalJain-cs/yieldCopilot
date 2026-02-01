@@ -58,5 +58,12 @@ export const AAVE_ATOKENS = {
 // Token list as array for iteration
 export const TOKEN_LIST = Object.values(TOKENS);
 
+// Tracked assets with full metadata for API
+export const TRACKED_ASSETS = Object.entries(TOKENS).map(([key, token]) => ({
+  ...token,
+  category: token.type === "Fiat-Backed" ? "Stablecoin" :
+    token.type === "Synthetic" ? "Synthetic" : "DeFi-Native",
+}));
+
 // Chain configuration
 export const ETHEREUM_CHAIN_ID = 1;

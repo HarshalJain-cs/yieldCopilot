@@ -4,22 +4,11 @@
  * Helper functions to fetch yield data for AI agent
  */
 
-import { fetchAllAssetsYieldData } from './dynamic-fetcher';
+import { fetchAllAssetsYieldData, type AssetYieldData } from './dynamic-fetcher';
 import { getYieldsCache, isRedisConfigured } from './redis';
 
-export interface AssetYieldData {
-  symbol: string;
-  address: string;
-  category: string;
-  supplyAPY: number;
-  borrowAPY: number;
-  utilizationRate: number;
-  totalSupply: number;
-  totalBorrow: number;
-  isActive: boolean;
-  borrowingEnabled: boolean;
-  lastUpdated: string;
-}
+// Re-export the type for consumers
+export type { AssetYieldData } from './dynamic-fetcher';
 
 /**
  * Get yield data for all assets

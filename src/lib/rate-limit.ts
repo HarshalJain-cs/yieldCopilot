@@ -47,6 +47,18 @@ export async function checkRateLimit(
   identifier: string,
   tier: 'free' | 'premium' | 'cron' = 'free'
 ) {
+  // Skip rate limiting if Redis is not configured
+  if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
+    return {
+      success: true,
+      headers: {
+        'X-RateLimit-Limit': 'unlimited',
+        'X-RateLimit-Remaining': 'unlimited',
+        'X-RateLimit-Reset': new Date(Date.now() + 60000).toISOString(),
+      },
+    };
+  }
+
   let limiter: Ratelimit;
 
   switch (tier) {

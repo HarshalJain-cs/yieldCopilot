@@ -1,22 +1,30 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { DM_Sans, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
-  title: "YieldCopilot | Real-time DeFi Yield Tracker",
+  title: "YieldX | Real-time DeFi Yield Tracker",
   description:
-    "Track, compare, and optimize your stablecoin yields across Aave protocol with real-time data and AI-powered insights.",
+    "Track, compare, and optimize your stablecoin yields across Aave protocol with real-time data and AI-powered insights. The future of DeFi is beautiful.",
   keywords: [
     "DeFi",
     "Yield",
@@ -27,7 +35,14 @@ export const metadata: Metadata = {
     "USDT",
     "USDe",
     "crvUSD",
+    "Crypto",
+    "Ethereum",
   ],
+  openGraph: {
+    title: "YieldX | Real-time DeFi Yield Tracker",
+    description: "The future of DeFi is beautiful. Track yields with confidence.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -36,9 +51,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${dmSans.variable} ${inter.variable} ${jetbrainsMono.variable} antialiased`}
       >
         <Providers>{children}</Providers>
       </body>
