@@ -1,16 +1,16 @@
 /**
  * Event-Driven Aave Data Listener
- * 
+ *
  * Listens to Aave V3 Pool contract events (Supply, Borrow, Repay, Withdraw)
  * and triggers data refresh ONLY when on-chain state changes.
- * 
+ *
  * This is the optimal approach - no wasted RPC calls!
  */
 
 import { getContract, watchContractEvents } from "thirdweb";
 import { ethereum } from "thirdweb/chains";
-import { thirdwebClient } from "./thirdweb";
 import { AAVE_V3_POOL_ADDRESS, TOKENS } from "./constants";
+import { thirdwebClient } from "./thirdweb";
 
 // Aave V3 Pool ABI - Events only
 const AAVE_POOL_EVENTS_ABI = [
@@ -80,7 +80,7 @@ const AAVE_POOL_EVENTS_ABI = [
 
 // Get our tracked token addresses as lowercase for comparison
 const TRACKED_ASSETS = Object.values(TOKENS).map((t) =>
-  t.address.toLowerCase()
+  t.address.toLowerCase(),
 );
 
 export interface AaveEvent {

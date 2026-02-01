@@ -2,20 +2,19 @@
 
 /**
  * useAllAssetsYields Hook
- * 
+ *
  * Fetches ALL Aave V3 assets dynamically from contract.
  * Event-driven updates - only refetches when on-chain state changes.
- * 
+ *
  * This is the DeFi Llama competitor approach.
  */
 
-import { useState, useEffect, useCallback, useRef } from "react";
-import { 
-  fetchAllAssetsYieldData, 
-  getTrackedAssetAddresses,
-  type AssetYieldData 
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  type AssetYieldData,
+  fetchAllAssetsYieldData,
 } from "@/lib/dynamic-fetcher";
-import { listenToAaveEvents, type AaveEvent } from "@/lib/event-listener";
+import { type AaveEvent, listenToAaveEvents } from "@/lib/event-listener";
 
 interface UseAllAssetsYieldsReturn {
   data: AssetYieldData[];
@@ -36,28 +35,30 @@ export function useAllAssetsYields(): UseAllAssetsYieldsReturn {
   const [lastEvent, setLastEvent] = useState<AaveEvent | null>(null);
   const [eventCount, setEventCount] = useState(0);
   const [trackedAddresses, setTrackedAddresses] = useState<string[]>([]);
-  
+
   const fetchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       console.log("[useAllAssetsYields] Fetching all assets...");
       const yields = await fetchAllAssetsYieldData();
-      
+
       setData(yields);
       setLastFetched(new Date());
-      
+
       // Update tracked addresses for event filtering
       const addresses = yields.map((y) => y.address.toLowerCase());
       setTrackedAddresses(addresses);
-      
+
       console.log(`[useAllAssetsYields] Fetched ${yields.length} assets`);
     } catch (err) {
       console.error("[useAllAssetsYields] Failed to fetch:", err);
-      setError(err instanceof Error ? err : new Error("Failed to fetch yields"));
+      setError(
+        err instanceof Error ? err : new Error("Failed to fetch yields"),
+      );
     } finally {
       setLoading(false);
     }
@@ -82,15 +83,19 @@ export function useAllAssetsYields(): UseAllAssetsYieldsReturn {
   useEffect(() => {
     const handleEvent = (event: AaveEvent) => {
       // Check if event is for a tracked asset
-      if (trackedAddresses.length > 0 && 
-          !trackedAddresses.includes(event.reserve.toLowerCase())) {
+      if (
+        trackedAddresses.length > 0 &&
+        !trackedAddresses.includes(event.reserve.toLowerCase())
+      ) {
         return; // Ignore events for assets we're not tracking
       }
-      
-      console.log(`[useAllAssetsYields] Event: ${event.eventName} for ${event.reserve}`);
+
+      console.log(
+        `[useAllAssetsYields] Event: ${event.eventName} for ${event.reserve}`,
+      );
       setLastEvent(event);
       setEventCount((prev) => prev + 1);
-      
+
       // Debounced refetch
       debouncedFetch();
     };

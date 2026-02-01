@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useCallback, ReactNode } from "react";
+import { type ReactNode, useCallback, useRef, useState } from "react";
 
 interface GlassCardProps {
   children: ReactNode;
@@ -47,7 +47,7 @@ export function GlassCard({
         });
       }
     },
-    [tilt, glow]
+    [tilt, glow],
   );
 
   const handleMouseLeave = useCallback(() => {
@@ -57,12 +57,25 @@ export function GlassCard({
     setGlowPosition({ x: 50, y: 50 });
   }, []);
 
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (onClick && (e.key === "Enter" || e.key === " ")) {
+        e.preventDefault();
+        onClick();
+      }
+    },
+    [onClick],
+  );
+
   return (
     <div
       ref={cardRef}
       onClick={onClick}
+      onKeyDown={onClick ? handleKeyDown : undefined}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
       className={`
         relative overflow-hidden
         glass-card

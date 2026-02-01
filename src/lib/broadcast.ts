@@ -17,12 +17,12 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 const supabaseAdmin = supabaseServiceKey
   ? createClient(ENV.SUPABASE_URL, supabaseServiceKey, {
-    realtime: {
-      params: {
-        eventsPerSecond: 10,
+      realtime: {
+        params: {
+          eventsPerSecond: 10,
+        },
       },
-    },
-  })
+    })
   : null;
 
 // Channel reference and state
@@ -58,11 +58,11 @@ export function getBroadcastStatus() {
  */
 export function initBroadcastChannel(): void {
   if (!supabaseAdmin) {
-    console.warn('[Broadcast] Supabase not configured');
+    console.warn("[Broadcast] Supabase not configured");
     return;
   }
 
-  yieldsChannel = supabaseAdmin.channel('yields', {
+  yieldsChannel = supabaseAdmin.channel("yields", {
     config: {
       broadcast: { self: false },
     },
@@ -71,28 +71,28 @@ export function initBroadcastChannel(): void {
   yieldsChannel.subscribe((status: string) => {
     console.log(`[Broadcast] Channel status: ${status}`);
 
-    if (status === 'SUBSCRIBED') {
+    if (status === "SUBSCRIBED") {
       isConnected = true;
       reconnectAttempts = 0;
-      console.log('✅ [Broadcast] Connected successfully');
+      console.log("✅ [Broadcast] Connected successfully");
 
       // Start heartbeat
       startHeartbeat();
 
       // Broadcast connection event
-      broadcastConnectionStatus('connected');
-    } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+      broadcastConnectionStatus("connected");
+    } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
       isConnected = false;
-      console.error('❌ [Broadcast] Connection error, attempting reconnect...');
+      console.error("❌ [Broadcast] Connection error, attempting reconnect...");
       handleReconnect();
-    } else if (status === 'CLOSED') {
+    } else if (status === "CLOSED") {
       isConnected = false;
-      console.warn('[Broadcast] Channel closed');
+      console.warn("[Broadcast] Channel closed");
       stopHeartbeat();
     }
   });
 
-  console.log('[Broadcast] Channel initialized');
+  console.log("[Broadcast] Channel initialized");
 }
 
 /**
@@ -100,21 +100,21 @@ export function initBroadcastChannel(): void {
  */
 function handleReconnect(): void {
   if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
-    console.error('[Broadcast] Max reconnect attempts reached');
+    console.error("[Broadcast] Max reconnect attempts reached");
     stopHeartbeat();
     // TODO: Send alert to monitoring system
     return;
   }
 
   reconnectAttempts++;
-  const delay = Math.min(1000 * Math.pow(2, reconnectAttempts), 30000);
+  const delay = Math.min(1000 * 2 ** reconnectAttempts, 30000);
 
   console.log(
-    `[Broadcast] Reconnect attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS} in ${delay}ms`
+    `[Broadcast] Reconnect attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS} in ${delay}ms`,
   );
 
   setTimeout(() => {
-    console.log('[Broadcast] Attempting to reconnect...');
+    console.log("[Broadcast] Attempting to reconnect...");
     closeBroadcastChannel();
     initBroadcastChannel();
   }, delay);
@@ -132,16 +132,16 @@ function startHeartbeat(): void {
     if (yieldsChannel && isConnected) {
       try {
         await yieldsChannel.send({
-          type: 'broadcast',
-          event: 'heartbeat',
+          type: "broadcast",
+          event: "heartbeat",
           payload: {
             timestamp: new Date().toISOString(),
             serverTime: Date.now(),
           },
         });
-        console.log('[Broadcast] Heartbeat sent');
+        console.log("[Broadcast] Heartbeat sent");
       } catch (error) {
-        console.error('[Broadcast] Heartbeat failed:', error);
+        console.error("[Broadcast] Heartbeat failed:", error);
         isConnected = false;
         handleReconnect();
       }
@@ -191,7 +191,9 @@ export async function broadcastYieldUpdate(data: {
       },
     });
 
-    console.log(`[Broadcast] Sent update: ${data.assets.length} assets, trigger: ${data.trigger}`);
+    console.log(
+      `[Broadcast] Sent update: ${data.assets.length} assets, trigger: ${data.trigger}`,
+    );
   } catch (error) {
     console.error("[Broadcast] Failed to send:", error);
   }
@@ -200,7 +202,10 @@ export async function broadcastYieldUpdate(data: {
 /**
  * Broadcast single asset update
  */
-export async function broadcastAssetUpdate(asset: AssetYieldData, trigger: string): Promise<void> {
+export async function broadcastAssetUpdate(
+  asset: AssetYieldData,
+  trigger: string,
+): Promise<void> {
   if (!yieldsChannel) {
     console.warn("[Broadcast] Channel not initialized");
     return;
@@ -234,14 +239,14 @@ export async function broadcastAssetUpdate(asset: AssetYieldData, trigger: strin
  * Broadcast connection status change
  */
 async function broadcastConnectionStatus(
-  status: 'connected' | 'disconnected' | 'reconnecting'
+  status: "connected" | "disconnected" | "reconnecting",
 ): Promise<void> {
   if (!yieldsChannel) return;
 
   try {
     await yieldsChannel.send({
-      type: 'broadcast',
-      event: 'connection_status',
+      type: "broadcast",
+      event: "connection_status",
       payload: {
         status,
         timestamp: new Date().toISOString(),
@@ -249,7 +254,7 @@ async function broadcastConnectionStatus(
       },
     });
   } catch (error) {
-    console.error('[Broadcast] Failed to send connection status:', error);
+    console.error("[Broadcast] Failed to send connection status:", error);
   }
 }
 
@@ -265,8 +270,8 @@ export async function broadcastBestYieldChanged(data: {
 
   try {
     await yieldsChannel.send({
-      type: 'broadcast',
-      event: 'best_yield_changed',
+      type: "broadcast",
+      event: "best_yield_changed",
       payload: {
         timestamp: new Date().toISOString(),
         category: data.category,
@@ -279,10 +284,10 @@ export async function broadcastBestYieldChanged(data: {
     });
 
     console.log(
-      `[Broadcast] Best yield changed: ${data.category} - ${data.newBest.symbol} (${data.newBest.apy}%)`
+      `[Broadcast] Best yield changed: ${data.category} - ${data.newBest.symbol} (${data.newBest.apy}%)`,
     );
   } catch (error) {
-    console.error('[Broadcast] Failed to send best yield change:', error);
+    console.error("[Broadcast] Failed to send best yield change:", error);
   }
 }
 
@@ -299,8 +304,8 @@ export async function broadcastMarketSnapshot(data: {
 
   try {
     await yieldsChannel.send({
-      type: 'broadcast',
-      event: 'market_snapshot',
+      type: "broadcast",
+      event: "market_snapshot",
       payload: {
         timestamp: new Date().toISOString(),
         ...data,
@@ -308,10 +313,10 @@ export async function broadcastMarketSnapshot(data: {
     });
 
     console.log(
-      `[Broadcast] Market snapshot sent: ${data.totalAssets} assets, avg ${data.avgSupplyAPY.toFixed(2)}%`
+      `[Broadcast] Market snapshot sent: ${data.totalAssets} assets, avg ${data.avgSupplyAPY.toFixed(2)}%`,
     );
   } catch (error) {
-    console.error('[Broadcast] Failed to send market snapshot:', error);
+    console.error("[Broadcast] Failed to send market snapshot:", error);
   }
 }
 
@@ -322,10 +327,10 @@ export async function closeBroadcastChannel(): Promise<void> {
   stopHeartbeat();
 
   if (yieldsChannel) {
-    await broadcastConnectionStatus('disconnected');
+    await broadcastConnectionStatus("disconnected");
     await yieldsChannel.unsubscribe();
     yieldsChannel = null;
     isConnected = false;
-    console.log('[Broadcast] Channel closed');
+    console.log("[Broadcast] Channel closed");
   }
 }

@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef, useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useCallback, useRef, useState } from "react";
 
 interface EnterButtonProps {
   onHover: (isHovering: boolean) => void;
@@ -39,7 +39,7 @@ export function EnterButton({ onHover, onProximity }: EnterButtonProps) {
         });
       }
     },
-    [isHovering, onProximity]
+    [isHovering, onProximity],
   );
 
   const handleMouseEnter = useCallback(() => {
@@ -59,23 +59,23 @@ export function EnterButton({ onHover, onProximity }: EnterButtonProps) {
   }, [router]);
 
   return (
-    <div
-      className="relative"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-    >
+    <div className="relative">
       <button
+        type="button"
         ref={buttonRef}
         onClick={handleClick}
         onMouseEnter={handleMouseEnter}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
         className={`
           relative group
           px-10 py-5 rounded-full
           font-semibold text-lg
           transition-all duration-300 ease-out
-          ${isHovering
-            ? "bg-[var(--brand-lavender-deep)] text-white shadow-2xl"
-            : "bg-[var(--brand-lavender)] text-white shadow-lg"
+          ${
+            isHovering
+              ? "bg-[var(--brand-lavender-deep)] text-white shadow-2xl"
+              : "bg-[var(--brand-lavender)] text-white shadow-lg"
           }
         `}
         style={{
@@ -104,6 +104,7 @@ export function EnterButton({ onHover, onProximity }: EnterButtonProps) {
 
       {/* Skip audio option */}
       <button
+        type="button"
         onClick={handleClick}
         className="block mx-auto mt-6 text-sm text-muted-foreground hover:text-foreground transition-colors"
       >

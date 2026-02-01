@@ -1,22 +1,22 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Navbar } from "@/components/layout/navbar";
-import { CustomCursor } from "@/components/core/custom-cursor";
-import { GlassCard } from "@/components/dashboard/glass-card";
-import { onboardingSteps } from "@/lib/content/onboarding-steps";
 import {
-  ArrowRight,
   ArrowLeft,
+  ArrowRight,
   CheckCircle,
-  Sparkles,
-  Wallet,
   LayoutDashboard,
-  TrendingUp,
   PartyPopper,
+  Sparkles,
+  TrendingUp,
+  Wallet,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { CustomCursor } from "@/components/core/custom-cursor";
+import { GlassCard } from "@/components/dashboard/glass-card";
+import { Navbar } from "@/components/layout/navbar";
+import { onboardingSteps } from "@/lib/content/onboarding-steps";
 
 const stepIcons = [Sparkles, Wallet, LayoutDashboard, TrendingUp, PartyPopper];
 
@@ -31,7 +31,7 @@ export default function OnboardingPage() {
       setCurrentStep(currentStep + 1);
     } else {
       // Mark onboarding as complete
-      localStorage.setItem('yieldx-onboarding-complete', 'true');
+      localStorage.setItem("yieldx-onboarding-complete", "true");
       router.push("/dashboard");
     }
   };
@@ -55,7 +55,8 @@ export default function OnboardingPage() {
               Step {currentStep + 1} of {onboardingSteps.length}
             </span>
             <span className="text-sm text-muted-foreground">
-              {Math.round(((currentStep + 1) / onboardingSteps.length) * 100)}% complete
+              {Math.round(((currentStep + 1) / onboardingSteps.length) * 100)}%
+              complete
             </span>
           </div>
           <div className="h-2 bg-[var(--glass-bg)] rounded-full overflow-hidden">
@@ -72,14 +73,16 @@ export default function OnboardingPage() {
         <div className="flex items-center justify-center gap-2 mb-8">
           {onboardingSteps.map((_, index) => (
             <button
+              type="button"
               key={index}
               onClick={() => setCurrentStep(index)}
+              aria-label={`Go to step ${index + 1}`}
               className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
                 index === currentStep
                   ? "bg-[var(--brand-lavender)] text-white scale-110"
                   : index < currentStep
-                  ? "bg-[var(--success)] text-white"
-                  : "bg-[var(--glass-bg)] text-muted-foreground"
+                    ? "bg-[var(--success)] text-white"
+                    : "bg-[var(--glass-bg)] text-muted-foreground"
               }`}
             >
               {index < currentStep ? (
@@ -98,16 +101,22 @@ export default function OnboardingPage() {
             <div className="w-16 h-16 rounded-2xl bg-[var(--accent-lavender)] flex items-center justify-center mx-auto mb-4">
               <Icon className="w-8 h-8 text-[var(--brand-lavender-deep)]" />
             </div>
-            <h1 className="text-2xl md:text-3xl font-bold mb-2">{step.title}</h1>
+            <h1 className="text-2xl md:text-3xl font-bold mb-2">
+              {step.title}
+            </h1>
             <p className="text-muted-foreground">{step.subtitle}</p>
           </div>
 
           {/* Content */}
           <div className="space-y-6">
             <div className="p-6 rounded-2xl bg-[var(--accent-lavender)]/30">
-              <h2 className="text-xl font-semibold mb-2">{step.content.headline}</h2>
+              <h2 className="text-xl font-semibold mb-2">
+                {step.content.headline}
+              </h2>
               {step.content.description && (
-                <p className="text-muted-foreground">{step.content.description}</p>
+                <p className="text-muted-foreground">
+                  {step.content.description}
+                </p>
               )}
             </div>
 
@@ -137,7 +146,9 @@ export default function OnboardingPage() {
                     </div>
                     <div>
                       <p className="font-medium">{item.step}</p>
-                      <p className="text-sm text-muted-foreground">{item.detail}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {item.detail}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -175,7 +186,9 @@ export default function OnboardingPage() {
                     className="p-4 rounded-xl bg-[var(--glass-bg)] border border-[var(--glass-border)]"
                   >
                     <h4 className="font-semibold mb-2">{term.term}</h4>
-                    <p className="text-muted-foreground mb-2">{term.definition}</p>
+                    <p className="text-muted-foreground mb-2">
+                      {term.definition}
+                    </p>
                     {term.example && (
                       <p className="text-sm bg-[var(--accent-mint)]/30 px-3 py-2 rounded-lg">
                         Example: {term.example}
@@ -184,18 +197,23 @@ export default function OnboardingPage() {
                     {term.levels && (
                       <div className="mt-3 space-y-2">
                         {term.levels.map((level, i) => (
-                          <div key={i} className="flex items-center gap-2 text-sm">
+                          <div
+                            key={i}
+                            className="flex items-center gap-2 text-sm"
+                          >
                             <span
                               className={`w-3 h-3 rounded-full ${
                                 level.level.includes("Low")
                                   ? "bg-green-500"
                                   : level.level.includes("Medium")
-                                  ? "bg-yellow-500"
-                                  : "bg-red-500"
+                                    ? "bg-yellow-500"
+                                    : "bg-red-500"
                               }`}
                             />
                             <span className="font-medium">{level.level}:</span>
-                            <span className="text-muted-foreground">{level.meaning}</span>
+                            <span className="text-muted-foreground">
+                              {level.meaning}
+                            </span>
                           </div>
                         ))}
                       </div>
@@ -256,6 +274,7 @@ export default function OnboardingPage() {
           {/* Navigation */}
           <div className="flex items-center justify-between mt-8 pt-6 border-t border-[var(--glass-border)]">
             <button
+              type="button"
               onClick={handleBack}
               disabled={currentStep === 0}
               className={`flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-colors ${
@@ -269,6 +288,7 @@ export default function OnboardingPage() {
             </button>
 
             <button
+              type="button"
               onClick={handleNext}
               className="flex items-center gap-2 px-8 py-3 rounded-full bg-[var(--brand-lavender-deep)] text-white font-medium hover:bg-[var(--brand-lavender)] transition-colors"
             >

@@ -40,7 +40,8 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: "YieldX | Real-time DeFi Yield Tracker",
-    description: "The future of DeFi is beautiful. Track yields with confidence.",
+    description:
+      "The future of DeFi is beautiful. Track yields with confidence.",
     type: "website",
   },
 };

@@ -1,7 +1,7 @@
 "use client";
 
+import { TrendingDown, TrendingUp } from "lucide-react";
 import { GlassCard } from "./glass-card";
-import { TrendingUp, TrendingDown, AlertCircle } from "lucide-react";
 
 interface AssetCardProps {
   symbol: string;

@@ -1,19 +1,23 @@
 /**
  * Yield Worker
- * 
+ *
  * Background worker that:
  * 1. Listens to Aave events
  * 2. Fetches fresh data via RPC
  * 3. Updates Redis cache
  * 4. Broadcasts via WebSocket
- * 
+ *
  * This is the core of the real-time system.
  */
 
+import {
+  broadcastYieldUpdate,
+  initBroadcastChannel,
+  isBroadcastConfigured,
+} from "./broadcast";
 import { fetchAllAssetsYieldData } from "./dynamic-fetcher";
-import { setYieldsCache, getYieldsCache, isRedisConfigured } from "./redis";
-import { broadcastYieldUpdate, initBroadcastChannel, isBroadcastConfigured } from "./broadcast";
 import { listenToAaveEvents } from "./event-listener";
+import { getYieldsCache, isRedisConfigured, setYieldsCache } from "./redis";
 
 // Worker state
 let isRunning = false;
@@ -41,7 +45,7 @@ const AUTO_RESTART_DELAY_MS = 10000; // 10 seconds
 async function processUpdate(trigger: string): Promise<void> {
   // Prevent concurrent processing
   if (isProcessing) {
-    console.log('[Worker] Already processing, skipping duplicate update');
+    console.log("[Worker] Already processing, skipping duplicate update");
     return;
   }
 
@@ -75,14 +79,14 @@ async function processUpdate(trigger: string): Promise<void> {
     lastUpdateTime = new Date();
     consecutiveFailures = 0; // Reset on success
   } catch (error) {
-    console.error('[Worker] Update failed:', error);
+    console.error("[Worker] Update failed:", error);
     failedUpdates++;
     consecutiveFailures++;
 
     // Too many failures - stop worker and attempt restart
     if (consecutiveFailures >= MAX_CONSECUTIVE_FAILURES) {
       console.error(
-        `[Worker] ${consecutiveFailures} consecutive failures, stopping worker`
+        `[Worker] ${consecutiveFailures} consecutive failures, stopping worker`,
       );
       stopYieldWorker();
       scheduleAutoRestart();
@@ -122,12 +126,12 @@ function scheduleAutoRestart(): void {
   console.log(`[Worker] Scheduling auto-restart in ${AUTO_RESTART_DELAY_MS}ms`);
 
   setTimeout(async () => {
-    console.log('[Worker] Attempting auto-restart...');
+    console.log("[Worker] Attempting auto-restart...");
     try {
       await startYieldWorker();
-      console.log('[Worker] Auto-restart successful');
+      console.log("[Worker] Auto-restart successful");
     } catch (error) {
-      console.error('[Worker] Auto-restart failed:', error);
+      console.error("[Worker] Auto-restart failed:", error);
       // Don't schedule another restart to prevent infinite loop
     }
   }, AUTO_RESTART_DELAY_MS);
@@ -138,11 +142,11 @@ function scheduleAutoRestart(): void {
  */
 export async function startYieldWorker(): Promise<void> {
   if (isRunning) {
-    console.log('[Worker] Already running');
+    console.log("[Worker] Already running");
     return;
   }
 
-  console.log('[Worker] Starting...');
+  console.log("[Worker] Starting...");
   isRunning = true;
   startTime = new Date();
   totalUpdates = 0;
@@ -156,7 +160,7 @@ export async function startYieldWorker(): Promise<void> {
     }
 
     // Initial data fetch
-    await processUpdate('startup');
+    await processUpdate("startup");
 
     // Start listening to events
     unsubscribeEvents = listenToAaveEvents((event) => {
@@ -164,9 +168,9 @@ export async function startYieldWorker(): Promise<void> {
       debouncedUpdate(event.eventName);
     });
 
-    console.log('[Worker] Started successfully');
+    console.log("[Worker] Started successfully");
   } catch (error) {
-    console.error('[Worker] Failed to start:', error);
+    console.error("[Worker] Failed to start:", error);
     isRunning = false;
     throw error;
   }
@@ -180,17 +184,17 @@ export const startWorker = startYieldWorker;
  */
 export function stopYieldWorker(): void {
   if (!isRunning) return;
-  
+
   if (unsubscribeEvents) {
     unsubscribeEvents();
     unsubscribeEvents = null;
   }
-  
+
   if (debounceTimeout) {
     clearTimeout(debounceTimeout);
     debounceTimeout = null;
   }
-  
+
   isRunning = false;
   console.log("[Worker] Stopped");
 }

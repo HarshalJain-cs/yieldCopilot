@@ -13,11 +13,11 @@
  * 4. Liquidity Depth (10% weight) - Low liquidity = harder to withdraw
  */
 
-import type { AssetYieldData } from './dynamic-fetcher';
+import type { AssetYieldData } from "./dynamic-fetcher";
 
 export interface RiskScore {
   score: number; // 0-100
-  level: 'low' | 'medium' | 'high';
+  level: "low" | "medium" | "high";
   label: string;
   color: string;
   emoji: string;
@@ -36,14 +36,14 @@ export interface RiskScore {
  */
 export function calculateRiskScore(
   asset: AssetYieldData,
-  historicalAPY?: number[] // Optional: last 30 days of APY data
+  historicalAPY?: number[], // Optional: last 30 days of APY data
 ): RiskScore {
   const factors = {
     utilizationRisk: calculateUtilizationRisk(asset.utilizationRate),
     assetRisk: calculateAssetCategoryRisk(asset.category),
     volatilityRisk: calculateVolatilityRisk(
       asset.supplyAPY,
-      historicalAPY || []
+      historicalAPY || [],
     ),
     liquidityRisk: calculateLiquidityRisk(asset.totalSupply, asset.symbol),
   };
@@ -53,47 +53,47 @@ export function calculateRiskScore(
     factors.utilizationRisk * 0.4 + // 40% weight
       factors.assetRisk * 0.3 + // 30% weight
       factors.volatilityRisk * 0.2 + // 20% weight
-      factors.liquidityRisk * 0.1 // 10% weight
+      factors.liquidityRisk * 0.1, // 10% weight
   );
 
   // Determine risk level
-  let level: 'low' | 'medium' | 'high';
+  let level: "low" | "medium" | "high";
   let label: string;
   let color: string;
   let emoji: string;
 
   if (score <= 30) {
-    level = 'low';
-    label = 'Low Risk';
-    color = '#10b981'; // green
-    emoji = '🟢';
+    level = "low";
+    label = "Low Risk";
+    color = "#10b981"; // green
+    emoji = "🟢";
   } else if (score <= 60) {
-    level = 'medium';
-    label = 'Medium Risk';
-    color = '#f59e0b'; // orange
-    emoji = '🟡';
+    level = "medium";
+    label = "Medium Risk";
+    color = "#f59e0b"; // orange
+    emoji = "🟡";
   } else {
-    level = 'high';
-    label = 'High Risk';
-    color = '#ef4444'; // red
-    emoji = '🔴';
+    level = "high";
+    label = "High Risk";
+    color = "#ef4444"; // red
+    emoji = "🔴";
   }
 
   // Generate warnings
   const warnings: string[] = [];
   if (factors.utilizationRisk > 70) {
     warnings.push(
-      'High utilization - withdrawals may be difficult during high demand'
+      "High utilization - withdrawals may be difficult during high demand",
     );
   }
   if (factors.assetRisk > 60) {
-    warnings.push('Volatile asset - value can fluctuate significantly');
+    warnings.push("Volatile asset - value can fluctuate significantly");
   }
   if (factors.volatilityRisk > 50) {
-    warnings.push('APY has been unstable - earnings may vary');
+    warnings.push("APY has been unstable - earnings may vary");
   }
   if (factors.liquidityRisk > 50) {
-    warnings.push('Lower liquidity - large withdrawals may impact rates');
+    warnings.push("Lower liquidity - large withdrawals may impact rates");
   }
 
   // Generate recommendation
@@ -147,13 +147,13 @@ function calculateUtilizationRisk(utilizationRate: number): number {
 function calculateAssetCategoryRisk(category: string): number {
   const categoryLower = category.toLowerCase();
 
-  if (categoryLower.includes('stablecoin')) {
+  if (categoryLower.includes("stablecoin")) {
     return 10; // Very safe
-  } else if (categoryLower.includes('eth') || categoryLower.includes('lst')) {
+  } else if (categoryLower.includes("eth") || categoryLower.includes("lst")) {
     return 30; // Ethereum-related, relatively stable
-  } else if (categoryLower.includes('btc')) {
+  } else if (categoryLower.includes("btc")) {
     return 40; // Bitcoin-wrapped, moderate
-  } else if (categoryLower.includes('governance')) {
+  } else if (categoryLower.includes("governance")) {
     return 70; // Governance tokens are volatile
   } else {
     return 80; // Unknown category, assume high risk
@@ -173,13 +173,14 @@ function calculateAssetCategoryRisk(category: string): number {
  */
 function calculateVolatilityRisk(
   currentAPY: number,
-  historicalAPY: number[]
+  historicalAPY: number[],
 ): number {
   if (historicalAPY.length > 0) {
     // Calculate standard deviation of APY
-    const mean = historicalAPY.reduce((sum, apy) => sum + apy, 0) / historicalAPY.length;
+    const mean =
+      historicalAPY.reduce((sum, apy) => sum + apy, 0) / historicalAPY.length;
     const variance =
-      historicalAPY.reduce((sum, apy) => sum + Math.pow(apy - mean, 2), 0) /
+      historicalAPY.reduce((sum, apy) => sum + (apy - mean) ** 2, 0) /
       historicalAPY.length;
     const stdDev = Math.sqrt(variance);
 
@@ -210,10 +211,13 @@ function calculateVolatilityRisk(
  * - $10M-$100M: Moderate (20-40)
  * - <$10M: Low liquidity (40-80)
  */
-function calculateLiquidityRisk(totalSupplyRaw: string, symbol: string): number {
+function calculateLiquidityRisk(
+  totalSupplyRaw: string,
+  symbol: string,
+): number {
   // Estimate USD value (simplified - would need price oracle in production)
   const decimals = getAssetDecimals(symbol);
-  const totalSupply = Number(totalSupplyRaw) / Math.pow(10, decimals);
+  const totalSupply = Number(totalSupplyRaw) / 10 ** decimals;
 
   // Rough USD estimate (assume $1 for stablecoins, need price feed for others)
   const estimatedUSD = totalSupply; // Simplified
@@ -233,8 +237,8 @@ function calculateLiquidityRisk(totalSupplyRaw: string, symbol: string): number 
  * Get asset decimals (simplified - would query from contract in production)
  */
 function getAssetDecimals(symbol: string): number {
-  if (['USDC', 'USDT'].includes(symbol)) return 6;
-  if (symbol === 'WBTC') return 8;
+  if (["USDC", "USDT"].includes(symbol)) return 6;
+  if (symbol === "WBTC") return 8;
   return 18; // Default for most ERC20
 }
 
@@ -255,7 +259,7 @@ function generateRecommendation(score: number, asset: AssetYieldData): string {
  * Batch calculate risk scores for all assets
  */
 export function calculateAllRiskScores(
-  assets: AssetYieldData[]
+  assets: AssetYieldData[],
 ): Map<string, RiskScore> {
   const scores = new Map<string, RiskScore>();
 
@@ -273,7 +277,7 @@ export function calculateAllRiskScores(
 export function getInvestmentRecommendation(
   userTokenSymbol: string,
   userBalanceUSD: number,
-  allAssets: AssetYieldData[]
+  allAssets: AssetYieldData[],
 ): {
   recommendedAsset: AssetYieldData;
   riskScore: RiskScore;
@@ -285,14 +289,12 @@ export function getInvestmentRecommendation(
   message: string;
 } {
   // Find matching asset or best alternative
-  let recommendedAsset = allAssets.find(
-    (a) => a.symbol === userTokenSymbol
-  );
+  let recommendedAsset = allAssets.find((a) => a.symbol === userTokenSymbol);
 
   // If user has non-yield-bearing token, suggest best stablecoin
   if (!recommendedAsset) {
     recommendedAsset = allAssets
-      .filter((a) => a.category === 'Stablecoin')
+      .filter((a) => a.category === "Stablecoin")
       .sort((a, b) => b.supplyAPY - a.supplyAPY)[0];
   }
 

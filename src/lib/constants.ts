@@ -4,8 +4,10 @@
 // ============================================
 // AAVE V3 PROTOCOL ADDRESSES
 // ============================================
-export const AAVE_V3_POOL_ADDRESS = "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2";
-export const AAVE_V3_POOL_DATA_PROVIDER = "0x7B4EB56E7CD4b454BA8ff71E4518426369a138a3";
+export const AAVE_V3_POOL_ADDRESS =
+  "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2";
+export const AAVE_V3_POOL_DATA_PROVIDER =
+  "0x7B4EB56E7CD4b454BA8ff71E4518426369a138a3";
 
 // ============================================
 // STABLECOIN TOKEN ADDRESSES (Underlying)
@@ -59,10 +61,14 @@ export const AAVE_ATOKENS = {
 export const TOKEN_LIST = Object.values(TOKENS);
 
 // Tracked assets with full metadata for API
-export const TRACKED_ASSETS = Object.entries(TOKENS).map(([key, token]) => ({
+export const TRACKED_ASSETS = Object.entries(TOKENS).map(([_key, token]) => ({
   ...token,
-  category: token.type === "Fiat-Backed" ? "Stablecoin" :
-    token.type === "Synthetic" ? "Synthetic" : "DeFi-Native",
+  category:
+    token.type === "Fiat-Backed"
+      ? "Stablecoin"
+      : token.type === "Synthetic"
+        ? "Synthetic"
+        : "DeFi-Native",
 }));
 
 // Chain configuration

@@ -7,20 +7,17 @@
  * Returns risk scores for all assets or a specific asset.
  */
 
-import { NextResponse } from 'next/server';
-import { getYieldsCache } from '@/lib/redis';
-import { fetchAllAssetsYieldData } from '@/lib/dynamic-fetcher';
-import {
-  calculateRiskScore,
-  calculateAllRiskScores,
-} from '@/lib/risk-score';
+import { NextResponse } from "next/server";
+import { fetchAllAssetsYieldData } from "@/lib/dynamic-fetcher";
 import {
   checkRateLimit,
-  getClientIdentifier,
   createRateLimitResponse,
-} from '@/lib/rate-limit';
+  getClientIdentifier,
+} from "@/lib/rate-limit";
+import { getYieldsCache } from "@/lib/redis";
+import { calculateAllRiskScores, calculateRiskScore } from "@/lib/risk-score";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   try {
@@ -28,7 +25,7 @@ export async function GET(request: Request) {
     const identifier = getClientIdentifier(request);
     const { success, headers: rateLimitHeaders } = await checkRateLimit(
       identifier,
-      'free'
+      "free",
     );
 
     if (!success) {
@@ -37,7 +34,7 @@ export async function GET(request: Request) {
 
     // Parse query params
     const { searchParams } = new URL(request.url);
-    const symbolFilter = searchParams.get('symbol');
+    const symbolFilter = searchParams.get("symbol");
 
     // Get yield data
     const cached = await getYieldsCache();
@@ -46,17 +43,17 @@ export async function GET(request: Request) {
     if (symbolFilter) {
       // Single asset risk score
       const asset = assets.find(
-        (a) => a.symbol.toLowerCase() === symbolFilter.toLowerCase()
+        (a) => a.symbol.toLowerCase() === symbolFilter.toLowerCase(),
       );
 
       if (!asset) {
         return NextResponse.json(
           {
             success: false,
-            error: 'Asset not found',
+            error: "Asset not found",
             message: `Asset '${symbolFilter}' not found`,
           },
-          { status: 404 }
+          { status: 404 },
         );
       }
 
@@ -73,7 +70,7 @@ export async function GET(request: Request) {
           },
           riskScore,
         },
-        { headers: rateLimitHeaders }
+        { headers: rateLimitHeaders },
       );
     } else {
       // All assets risk scores
@@ -83,11 +80,12 @@ export async function GET(request: Request) {
         symbol: asset.symbol,
         category: asset.category,
         supplyAPY: parseFloat(asset.supplyAPY.toFixed(4)),
-        riskScore: allRiskScores.get(asset.symbol)!.score,
-        riskLevel: allRiskScores.get(asset.symbol)!.level,
-        riskLabel: allRiskScores.get(asset.symbol)!.label,
-        emoji: allRiskScores.get(asset.symbol)!.emoji,
-        recommendation: allRiskScores.get(asset.symbol)!.recommendation,
+        riskScore: allRiskScores.get(asset.symbol)?.score ?? 50,
+        riskLevel: allRiskScores.get(asset.symbol)?.level ?? "medium",
+        riskLabel: allRiskScores.get(asset.symbol)?.label ?? "Unknown",
+        emoji: allRiskScores.get(asset.symbol)?.emoji ?? "⚪",
+        recommendation:
+          allRiskScores.get(asset.symbol)?.recommendation ?? "Unknown asset",
       }));
 
       // Sort by risk score (safest first)
@@ -103,21 +101,20 @@ export async function GET(request: Request) {
             safest: results[0],
             riskiest: results[results.length - 1],
             averageRisk:
-              results.reduce((sum, r) => sum + r.riskScore, 0) /
-              results.length,
+              results.reduce((sum, r) => sum + r.riskScore, 0) / results.length,
           },
         },
-        { headers: rateLimitHeaders }
+        { headers: rateLimitHeaders },
       );
     }
   } catch (error) {
     return NextResponse.json(
       {
         success: false,
-        error: 'Failed to calculate risk scores',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        error: "Failed to calculate risk scores",
+        message: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

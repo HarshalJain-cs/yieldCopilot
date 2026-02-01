@@ -1,18 +1,24 @@
 "use client";
 
+import { ArrowRight, BookOpen } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
-import { PortfolioCard, PortfolioCardSkeleton } from "@/components/dashboard/portfolio-card";
-import { AssetCard, AssetCardSkeleton } from "@/components/dashboard/asset-card";
-import { QuickActions } from "@/components/dashboard/quick-actions";
-import { MarketOverview } from "@/components/dashboard/market-overview";
-import { GlassCard } from "@/components/dashboard/glass-card";
 import { CustomCursor } from "@/components/core/custom-cursor";
 import { LiquidBackground } from "@/components/core/liquid-background";
+import {
+  AssetCard,
+  AssetCardSkeleton,
+} from "@/components/dashboard/asset-card";
+import { GlassCard } from "@/components/dashboard/glass-card";
 import { LiveChainStats } from "@/components/dashboard/live-chain-stats";
-import { BookOpen, ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { MarketOverview } from "@/components/dashboard/market-overview";
+import {
+  PortfolioCard,
+  PortfolioCardSkeleton,
+} from "@/components/dashboard/portfolio-card";
+import { QuickActions } from "@/components/dashboard/quick-actions";
+import { Footer } from "@/components/layout/footer";
+import { Navbar } from "@/components/layout/navbar";
 
 interface AssetYieldData {
   symbol: string;
@@ -28,10 +34,30 @@ interface AssetYieldData {
 
 // Featured assets with their colors and risk levels
 const featuredAssets = [
-  { symbol: "USDC", name: "USD Coin", color: "#2775CA", riskLevel: "low" as const },
-  { symbol: "USDT", name: "Tether", color: "#26A17B", riskLevel: "low" as const },
-  { symbol: "USDe", name: "Ethena USDe", color: "#00D4AA", riskLevel: "medium" as const },
-  { symbol: "crvUSD", name: "Curve USD", color: "#FF6B9D", riskLevel: "medium" as const },
+  {
+    symbol: "USDC",
+    name: "USD Coin",
+    color: "#2775CA",
+    riskLevel: "low" as const,
+  },
+  {
+    symbol: "USDT",
+    name: "Tether",
+    color: "#26A17B",
+    riskLevel: "low" as const,
+  },
+  {
+    symbol: "USDe",
+    name: "Ethena USDe",
+    color: "#00D4AA",
+    riskLevel: "medium" as const,
+  },
+  {
+    symbol: "crvUSD",
+    name: "Curve USD",
+    color: "#FF6B9D",
+    riskLevel: "medium" as const,
+  },
 ];
 
 export default function DashboardPage() {
@@ -61,9 +87,7 @@ export default function DashboardPage() {
 
   // Get featured asset data
   const getFeaturedAssetData = (symbol: string) => {
-    return yields.find(
-      (y) => y.symbol.toUpperCase() === symbol.toUpperCase()
-    );
+    return yields.find((y) => y.symbol.toUpperCase() === symbol.toUpperCase());
   };
 
   // Calculate portfolio stats (demo values for now)
@@ -122,19 +146,19 @@ export default function DashboardPage() {
           {loading
             ? [...Array(4)].map((_, i) => <AssetCardSkeleton key={i} />)
             : featuredAssets.map((asset) => {
-              const data = getFeaturedAssetData(asset.symbol);
-              return (
-                <AssetCard
-                  key={asset.symbol}
-                  symbol={asset.symbol}
-                  name={asset.name}
-                  supplyAPY={data?.supplyAPY ?? 0}
-                  change24h={(Math.random() - 0.3) * 1}
-                  riskLevel={asset.riskLevel}
-                  color={asset.color}
-                />
-              );
-            })}
+                const data = getFeaturedAssetData(asset.symbol);
+                return (
+                  <AssetCard
+                    key={asset.symbol}
+                    symbol={asset.symbol}
+                    name={asset.name}
+                    supplyAPY={data?.supplyAPY ?? 0}
+                    change24h={(Math.random() - 0.3) * 1}
+                    riskLevel={asset.riskLevel}
+                    color={asset.color}
+                  />
+                );
+              })}
 
           {/* Quick Actions */}
           <QuickActions />
@@ -151,7 +175,8 @@ export default function DashboardPage() {
               <div className="flex-1">
                 <h3 className="font-semibold text-lg mb-1">New to DeFi?</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Learn about yields, risks, and strategies with our interactive guides.
+                  Learn about yields, risks, and strategies with our interactive
+                  guides.
                 </p>
                 <Link
                   href="/learn"
@@ -178,7 +203,10 @@ export default function DashboardPage() {
             {loading ? (
               <div className="space-y-3">
                 {[...Array(5)].map((_, i) => (
-                  <div key={i} className="h-16 bg-muted rounded-lg animate-pulse" />
+                  <div
+                    key={i}
+                    className="h-16 bg-muted rounded-lg animate-pulse"
+                  />
                 ))}
               </div>
             ) : (
@@ -187,9 +215,15 @@ export default function DashboardPage() {
                   <thead>
                     <tr className="text-left text-sm text-muted-foreground border-b border-[var(--glass-border)]">
                       <th className="pb-3 font-medium">Asset</th>
-                      <th className="pb-3 font-medium text-right">Supply APY</th>
-                      <th className="pb-3 font-medium text-right">Borrow APY</th>
-                      <th className="pb-3 font-medium text-right">Utilization</th>
+                      <th className="pb-3 font-medium text-right">
+                        Supply APY
+                      </th>
+                      <th className="pb-3 font-medium text-right">
+                        Borrow APY
+                      </th>
+                      <th className="pb-3 font-medium text-right">
+                        Utilization
+                      </th>
                       <th className="pb-3 font-medium text-right">Category</th>
                     </tr>
                   </thead>

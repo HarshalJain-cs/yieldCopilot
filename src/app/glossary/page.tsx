@@ -1,13 +1,22 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
+import {
+  BookOpen,
+  ChevronDown,
+  ChevronUp,
+  ExternalLink,
+  Search,
+} from "lucide-react";
+import { useMemo, useState } from "react";
 import { CustomCursor } from "@/components/core/custom-cursor";
 import { LiquidBackground } from "@/components/core/liquid-background";
 import { GlassCard } from "@/components/dashboard/glass-card";
-import { glossaryTerms, glossaryCategories } from "@/lib/content/glossary-terms";
-import { Search, ChevronDown, ChevronUp, BookOpen, ExternalLink } from "lucide-react";
+import { Footer } from "@/components/layout/footer";
+import { Navbar } from "@/components/layout/navbar";
+import {
+  glossaryCategories,
+  glossaryTerms,
+} from "@/lib/content/glossary-terms";
 
 export default function GlossaryPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -25,7 +34,7 @@ export default function GlossaryPage() {
         (term) =>
           term.term.toLowerCase().includes(query) ||
           term.definition.toLowerCase().includes(query) ||
-          (term.fullName && term.fullName.toLowerCase().includes(query))
+          term.fullName?.toLowerCase().includes(query),
       );
     }
 
@@ -74,7 +83,8 @@ export default function GlossaryPage() {
           </div>
           <h1 className="text-display-md mb-4">DeFi Glossary</h1>
           <p className="text-lg text-white/80 max-w-2xl mx-auto">
-            Everything you need to know about DeFi, explained simply. Search for any term or browse by category.
+            Everything you need to know about DeFi, explained simply. Search for
+            any term or browse by category.
           </p>
         </div>
 
@@ -96,12 +106,14 @@ export default function GlossaryPage() {
           <div className="flex flex-wrap gap-2">
             {glossaryCategories.map((category) => (
               <button
+                type="button"
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${selectedCategory === category.id
-                  ? "bg-[var(--brand-lavender)] text-white"
-                  : "bg-[var(--glass-bg)] text-muted-foreground hover:bg-[var(--glass-bg-hover)] border border-[var(--glass-border)]"
-                  }`}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                  selectedCategory === category.id
+                    ? "bg-[var(--brand-lavender)] text-white"
+                    : "bg-[var(--glass-bg)] text-muted-foreground hover:bg-[var(--glass-bg-hover)] border border-[var(--glass-border)]"
+                }`}
               >
                 {category.label}
               </button>
@@ -111,7 +123,8 @@ export default function GlossaryPage() {
 
         {/* Results count */}
         <p className="text-sm text-white/70 mb-6">
-          {filteredTerms.length} {filteredTerms.length === 1 ? "term" : "terms"} found
+          {filteredTerms.length} {filteredTerms.length === 1 ? "term" : "terms"}{" "}
+          found
         </p>
 
         {/* Terms list */}
@@ -138,20 +151,24 @@ export default function GlossaryPage() {
                       tilt={false}
                     >
                       <button
+                        type="button"
                         onClick={() => toggleTerm(term.term)}
                         className="w-full p-5 flex items-center justify-between text-left hover:bg-[var(--glass-bg-hover)] transition-colors"
                       >
                         <div>
                           <div className="flex items-center gap-3 mb-1">
-                            <h3 className="font-semibold text-lg">{term.term}</h3>
+                            <h3 className="font-semibold text-lg">
+                              {term.term}
+                            </h3>
                             {term.riskLevel && (
                               <span
-                                className={`px-2 py-0.5 rounded-full text-xs font-medium ${term.riskLevel === "low"
-                                  ? "bg-[var(--accent-mint)] text-green-700"
-                                  : term.riskLevel === "medium"
-                                    ? "bg-amber-100 text-amber-700"
-                                    : "bg-red-100 text-red-700"
-                                  }`}
+                                className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                                  term.riskLevel === "low"
+                                    ? "bg-[var(--accent-mint)] text-green-700"
+                                    : term.riskLevel === "medium"
+                                      ? "bg-amber-100 text-amber-700"
+                                      : "bg-red-100 text-red-700"
+                                }`}
                               >
                                 {term.riskLevel} risk
                               </span>
@@ -174,12 +191,16 @@ export default function GlossaryPage() {
                         <div className="px-5 pb-5 pt-0 border-t border-[var(--glass-border)]">
                           <div className="pt-4 space-y-4">
                             {/* Definition */}
-                            <p className="text-muted-foreground">{term.definition}</p>
+                            <p className="text-muted-foreground">
+                              {term.definition}
+                            </p>
 
                             {/* Example */}
                             {term.example && (
                               <div className="p-4 rounded-xl bg-[var(--accent-lavender)]/30">
-                                <p className="text-sm font-medium mb-1">Example</p>
+                                <p className="text-sm font-medium mb-1">
+                                  Example
+                                </p>
                                 <p className="text-sm text-muted-foreground">
                                   {term.example}
                                 </p>
@@ -189,7 +210,9 @@ export default function GlossaryPage() {
                             {/* Key Points */}
                             {term.keyPoints && term.keyPoints.length > 0 && (
                               <div>
-                                <p className="text-sm font-medium mb-2">Key Points</p>
+                                <p className="text-sm font-medium mb-2">
+                                  Key Points
+                                </p>
                                 <ul className="space-y-2">
                                   {term.keyPoints.map((point, index) => (
                                     <li
@@ -205,25 +228,29 @@ export default function GlossaryPage() {
                             )}
 
                             {/* Related Terms */}
-                            {term.relatedTerms && term.relatedTerms.length > 0 && (
-                              <div>
-                                <p className="text-sm font-medium mb-2">Related Terms</p>
-                                <div className="flex flex-wrap gap-2">
-                                  {term.relatedTerms.map((related) => (
-                                    <button
-                                      key={related}
-                                      onClick={() => {
-                                        setSearchQuery(related);
-                                        setSelectedCategory("all");
-                                      }}
-                                      className="px-3 py-1 rounded-full text-sm bg-[var(--glass-bg)] border border-[var(--glass-border)] hover:bg-[var(--brand-lavender)] hover:text-white hover:border-[var(--brand-lavender)] transition-colors"
-                                    >
-                                      {related}
-                                    </button>
-                                  ))}
+                            {term.relatedTerms &&
+                              term.relatedTerms.length > 0 && (
+                                <div>
+                                  <p className="text-sm font-medium mb-2">
+                                    Related Terms
+                                  </p>
+                                  <div className="flex flex-wrap gap-2">
+                                    {term.relatedTerms.map((related) => (
+                                      <button
+                                        type="button"
+                                        key={related}
+                                        onClick={() => {
+                                          setSearchQuery(related);
+                                          setSelectedCategory("all");
+                                        }}
+                                        className="px-3 py-1 rounded-full text-sm bg-[var(--glass-bg)] border border-[var(--glass-border)] hover:bg-[var(--brand-lavender)] hover:text-white hover:border-[var(--brand-lavender)] transition-colors"
+                                      >
+                                        {related}
+                                      </button>
+                                    ))}
+                                  </div>
                                 </div>
-                              </div>
-                            )}
+                              )}
 
                             {/* Category badge */}
                             <div className="pt-2">
@@ -252,6 +279,7 @@ export default function GlossaryPage() {
               Try adjusting your search or filter criteria
             </p>
             <button
+              type="button"
               onClick={() => {
                 setSearchQuery("");
                 setSelectedCategory("all");
@@ -267,7 +295,8 @@ export default function GlossaryPage() {
         <GlassCard className="mt-12 p-8 text-center">
           <h3 className="text-xl font-semibold mb-2">Want to learn more?</h3>
           <p className="text-muted-foreground mb-6">
-            Check out our interactive lessons to understand DeFi concepts in depth.
+            Check out our interactive lessons to understand DeFi concepts in
+            depth.
           </p>
           <a
             href="/learn"

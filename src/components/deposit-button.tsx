@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useSendTransaction, useActiveAccount } from "thirdweb/react";
-import { thirdwebClient } from "@/lib/thirdweb";
+import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 import {
+  parseTokenAmount,
   prepareApproveTransaction,
   prepareSupplyTransaction,
-  parseTokenAmount,
 } from "@/lib/aave-deposit";
 import { getChainConfig, type SupportedChainId } from "@/lib/chains-config";
+import { thirdwebClient } from "@/lib/thirdweb";
 
 interface DepositButtonProps {
   tokenSymbol: string;
@@ -38,8 +38,10 @@ export function DepositButton({
 
     try {
       const config = getChainConfig(chainId);
-      const tokenAddress = config.tokens[tokenSymbol as keyof typeof config.tokens];
-      const decimals = tokenSymbol === "USDC" || tokenSymbol === "USDT" ? 6 : 18;
+      const tokenAddress =
+        config.tokens[tokenSymbol as keyof typeof config.tokens];
+      const decimals =
+        tokenSymbol === "USDC" || tokenSymbol === "USDT" ? 6 : 18;
       const amountInWei = parseTokenAmount(amount, decimals);
 
       // Step 1: Approve
@@ -50,7 +52,7 @@ export function DepositButton({
         thirdwebClient,
         tokenAddress,
         amountInWei,
-        chainId
+        chainId,
       );
 
       await new Promise<void>((resolve, reject) => {
@@ -77,7 +79,7 @@ export function DepositButton({
         tokenAddress,
         amountInWei,
         account.address,
-        chainId
+        chainId,
       );
 
       await new Promise<void>((resolve, reject) => {
@@ -85,7 +87,9 @@ export function DepositButton({
           onSuccess: () => {
             console.log("✅ Deposit successful");
             setStep(3);
-            setStatus(`Success! You're now earning interest on ${amount} ${tokenSymbol}`);
+            setStatus(
+              `Success! You're now earning interest on ${amount} ${tokenSymbol}`,
+            );
             resolve();
             onSuccess?.();
           },
@@ -97,7 +101,9 @@ export function DepositButton({
       });
     } catch (error) {
       console.error("Transaction failed:", error);
-      setStatus(`Error: ${error instanceof Error ? error.message : "Transaction failed"}`);
+      setStatus(
+        `Error: ${error instanceof Error ? error.message : "Transaction failed"}`,
+      );
       setStep(0);
       onError?.(error as Error);
     }
@@ -105,7 +111,11 @@ export function DepositButton({
 
   if (!account) {
     return (
-      <button className="px-6 py-3 bg-gray-400 text-white rounded-lg cursor-not-allowed" disabled>
+      <button
+        type="button"
+        className="px-6 py-3 bg-gray-400 text-white rounded-lg cursor-not-allowed"
+        disabled
+      >
         Connect Wallet First
       </button>
     );
@@ -114,6 +124,7 @@ export function DepositButton({
   return (
     <div className="flex flex-col gap-2">
       <button
+        type="button"
         onClick={handleDeposit}
         disabled={isPending || step > 0}
         className={`px-6 py-3 rounded-lg font-semibold transition-all ${
@@ -128,7 +139,9 @@ export function DepositButton({
         {step === 3 && "✅ Deposited!"}
       </button>
 
-      {status && <p className="text-sm text-gray-600 dark:text-gray-400">{status}</p>}
+      {status && (
+        <p className="text-sm text-gray-600 dark:text-gray-400">{status}</p>
+      )}
 
       {step === 3 && (
         <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
@@ -136,7 +149,8 @@ export function DepositButton({
             🎉 Success! Your {tokenSymbol} is now earning interest in Aave!
           </p>
           <p className="text-sm text-green-700 dark:text-green-300 mt-2">
-            You'll receive aTokens (a{tokenSymbol}) in your wallet. These automatically increase in value as you earn interest.
+            You'll receive aTokens (a{tokenSymbol}) in your wallet. These
+            automatically increase in value as you earn interest.
           </p>
         </div>
       )}

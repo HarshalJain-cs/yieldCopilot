@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { DepositButton } from "./deposit-button";
 import { getChainConfig, type SupportedChainId } from "@/lib/chains-config";
+import { DepositButton } from "./deposit-button";
 
 interface PoolCardSimpleProps {
   symbol: string;
@@ -19,7 +19,7 @@ export function PoolCardSimple({
   supplyAPY,
   chainId,
   riskScore = 50,
-  riskLevel = "medium",
+  riskLevel: _riskLevel = "medium",
 }: PoolCardSimpleProps) {
   const [amount, setAmount] = useState("100");
   const config = getChainConfig(chainId);
@@ -27,7 +27,8 @@ export function PoolCardSimple({
 
   const getRiskColor = () => {
     if (riskScore < 30) return "bg-green-100 text-green-800 border-green-300";
-    if (riskScore < 60) return "bg-yellow-100 text-yellow-800 border-yellow-300";
+    if (riskScore < 60)
+      return "bg-yellow-100 text-yellow-800 border-yellow-300";
     return "bg-red-100 text-red-800 border-red-300";
   };
 
@@ -45,29 +46,49 @@ export function PoolCardSimple({
           <p className="text-sm text-gray-600 dark:text-gray-400">{category}</p>
         </div>
         <div className="text-right">
-          <div className="text-3xl font-bold text-green-600">{supplyAPY.toFixed(2)}%</div>
+          <div className="text-3xl font-bold text-green-600">
+            {supplyAPY.toFixed(2)}%
+          </div>
           <div className="text-xs text-gray-500">APY</div>
         </div>
       </div>
 
-      <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium border mb-4 ${getRiskColor()}`}>
+      <div
+        className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium border mb-4 ${getRiskColor()}`}
+      >
         <span>{getRiskEmoji()}</span>
         <span>Risk Score: {riskScore}/100</span>
       </div>
 
       <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-4">
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">If you deposit ${amount}:</p>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+          If you deposit ${amount}:
+        </p>
         <ul className="text-sm space-y-1">
-          <li>📈 Yearly: ${((parseFloat(amount) * supplyAPY) / 100).toFixed(2)}</li>
-          <li>📅 Monthly: ${((parseFloat(amount) * supplyAPY) / 100 / 12).toFixed(2)}</li>
-          <li>💰 Daily: ${((parseFloat(amount) * supplyAPY) / 100 / 365).toFixed(2)}</li>
+          <li>
+            📈 Yearly: ${((parseFloat(amount) * supplyAPY) / 100).toFixed(2)}
+          </li>
+          <li>
+            📅 Monthly: $
+            {((parseFloat(amount) * supplyAPY) / 100 / 12).toFixed(2)}
+          </li>
+          <li>
+            💰 Daily: $
+            {((parseFloat(amount) * supplyAPY) / 100 / 365).toFixed(2)}
+          </li>
         </ul>
       </div>
 
       {isSupported && (
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-2">Amount to deposit:</label>
+          <label
+            className="block text-sm font-medium mb-2"
+            htmlFor={`amount-${symbol}`}
+          >
+            Amount to deposit:
+          </label>
           <input
+            id={`amount-${symbol}`}
             type="number"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
@@ -95,9 +116,14 @@ export function PoolCardSimple({
 
       <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-800">
         <details className="text-sm text-gray-600 dark:text-gray-400">
-          <summary className="cursor-pointer font-medium">💡 What is APY?</summary>
+          <summary className="cursor-pointer font-medium">
+            💡 What is APY?
+          </summary>
           <p className="mt-2">
-            APY (Annual Percentage Yield) is how much you earn per year. For example, {supplyAPY.toFixed(2)}% APY means ${amount} becomes ${(parseFloat(amount) * (1 + supplyAPY / 100)).toFixed(2)} after 1 year.
+            APY (Annual Percentage Yield) is how much you earn per year. For
+            example, {supplyAPY.toFixed(2)}% APY means ${amount} becomes $
+            {(parseFloat(amount) * (1 + supplyAPY / 100)).toFixed(2)} after 1
+            year.
           </p>
         </details>
       </div>

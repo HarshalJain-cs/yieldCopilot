@@ -1,23 +1,22 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { Navbar } from "@/components/layout/navbar";
-import { Footer } from "@/components/layout/footer";
+import {
+  AlertTriangle,
+  BookOpen,
+  CheckCircle,
+  ChevronDown,
+  Clock,
+  DollarSign,
+  Shield,
+  TrendingUp,
+  Zap,
+} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { CustomCursor } from "@/components/core/custom-cursor";
 import { LiquidBackground } from "@/components/core/liquid-background";
 import { GlassCard } from "@/components/dashboard/glass-card";
-import {
-  ChevronDown,
-  Clock,
-  BookOpen,
-  TrendingUp,
-  Shield,
-  Zap,
-  DollarSign,
-  AlertTriangle,
-  HelpCircle,
-  CheckCircle,
-} from "lucide-react";
+import { Footer } from "@/components/layout/footer";
+import { Navbar } from "@/components/layout/navbar";
 
 interface EducationCard {
   id: number;
@@ -191,11 +190,7 @@ const educationCards: EducationCard[] = [
         "We use ERC-4337 (Account Abstraction) to sponsor your gas fees.",
       explanation:
         "Every blockchain transaction costs gas. YieldX uses smart accounts with a Paymaster that covers these costs, so you pay nothing.",
-      tips: [
-        "Gas-free deposits",
-        "Gas-free withdrawals",
-        "We cover the cost",
-      ],
+      tips: ["Gas-free deposits", "Gas-free withdrawals", "We cover the cost"],
     },
   },
 ];
@@ -229,6 +224,7 @@ export default function LearnPage() {
       <div className="fixed right-8 top-1/2 -translate-y-1/2 z-50 hidden lg:flex flex-col gap-3">
         {educationCards.map((_, index) => (
           <button
+            type="button"
             key={index}
             onClick={() => {
               containerRef.current?.scrollTo({
@@ -236,27 +232,25 @@ export default function LearnPage() {
                 behavior: "smooth",
               });
             }}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${activeCard === index
-              ? "bg-[var(--brand-lavender)] scale-125"
-              : "bg-[var(--glass-border)] hover:bg-[var(--brand-lavender)]/50"
-              }`}
+            aria-label={`Go to lesson ${index + 1}`}
+            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+              activeCard === index
+                ? "bg-[var(--brand-lavender)] scale-125"
+                : "bg-[var(--glass-border)] hover:bg-[var(--brand-lavender)]/50"
+            }`}
           />
         ))}
       </div>
 
       {/* Content Container - Normal scrolling */}
-      <div
-        ref={containerRef}
-        className="overflow-y-auto relative z-10"
-      >
+      <div ref={containerRef} className="overflow-y-auto relative z-10">
         {/* Header Card */}
         <div className="pt-28 px-4">
           <div className="max-w-2xl mx-auto text-center">
-            <h1 className="text-display-lg mb-6">
-              Learn DeFi
-            </h1>
+            <h1 className="text-display-lg mb-6">Learn DeFi</h1>
             <p className="text-xl text-white/80 mb-8">
-              Master the fundamentals of decentralized finance with bite-sized lessons
+              Master the fundamentals of decentralized finance with bite-sized
+              lessons
             </p>
             <div className="flex items-center justify-center gap-4 text-sm text-white/70 mb-12">
               <span className="flex items-center gap-2">
@@ -288,10 +282,7 @@ export default function LearnPage() {
                       className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0"
                       style={{ backgroundColor: `${card.color}20` }}
                     >
-                      <Icon
-                        className="w-8 h-8"
-                        style={{ color: card.color }}
-                      />
+                      <Icon className="w-8 h-8" style={{ color: card.color }} />
                     </div>
                     <div>
                       <div className="flex items-center gap-3 mb-2">
@@ -313,7 +304,9 @@ export default function LearnPage() {
                   {/* Main Content */}
                   <div className="space-y-6">
                     <div className="p-6 rounded-2xl bg-[var(--accent-lavender)]/30">
-                      <p className="text-lg font-medium">{card.content.mainPoint}</p>
+                      <p className="text-lg font-medium">
+                        {card.content.mainPoint}
+                      </p>
                     </div>
 
                     <p className="text-muted-foreground text-lg leading-relaxed">
@@ -323,9 +316,16 @@ export default function LearnPage() {
                     {/* Example */}
                     {card.content.example && (
                       <div className="p-6 rounded-2xl bg-[var(--glass-bg)] border border-[var(--glass-border)]">
-                        <p className="text-sm text-muted-foreground mb-2">Example</p>
-                        <p className="font-medium mb-1">{card.content.example.scenario}</p>
-                        <p className="text-lg font-bold" style={{ color: card.color }}>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Example
+                        </p>
+                        <p className="font-medium mb-1">
+                          {card.content.example.scenario}
+                        </p>
+                        <p
+                          className="text-lg font-bold"
+                          style={{ color: card.color }}
+                        >
                           {card.content.example.result}
                         </p>
                       </div>
@@ -334,7 +334,9 @@ export default function LearnPage() {
                     {/* Tips */}
                     {card.content.tips && (
                       <div className="space-y-3">
-                        <p className="text-sm font-medium text-muted-foreground">Key Takeaways</p>
+                        <p className="text-sm font-medium text-muted-foreground">
+                          Key Takeaways
+                        </p>
                         {card.content.tips.map((tip, i) => (
                           <div key={i} className="flex items-center gap-3">
                             <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
@@ -355,10 +357,11 @@ export default function LearnPage() {
                         {educationCards.map((_, i) => (
                           <div
                             key={i}
-                            className={`w-8 h-1 rounded-full ${i <= index
-                              ? "bg-[var(--brand-lavender)]"
-                              : "bg-[var(--glass-border)]"
-                              }`}
+                            className={`w-8 h-1 rounded-full ${
+                              i <= index
+                                ? "bg-[var(--brand-lavender)]"
+                                : "bg-[var(--glass-border)]"
+                            }`}
                           />
                         ))}
                       </div>
@@ -378,7 +381,8 @@ export default function LearnPage() {
             </div>
             <h2 className="text-display-md mb-4">You're Ready!</h2>
             <p className="text-xl text-muted-foreground mb-8">
-              You've completed the basics. Time to put your knowledge into action.
+              You've completed the basics. Time to put your knowledge into
+              action.
             </p>
             <div className="flex items-center justify-center gap-4">
               <a

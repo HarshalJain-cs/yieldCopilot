@@ -25,17 +25,26 @@ export function Footer() {
             <h4 className="font-semibold text-sm mb-4 text-white">Product</h4>
             <ul className="space-y-3">
               <li>
-                <Link href="/dashboard" className="text-sm text-white/70 hover:text-white transition-colors">
+                <Link
+                  href="/dashboard"
+                  className="text-sm text-white/70 hover:text-white transition-colors"
+                >
                   Dashboard
                 </Link>
               </li>
               <li>
-                <Link href="/learn" className="text-sm text-white/70 hover:text-white transition-colors">
+                <Link
+                  href="/learn"
+                  className="text-sm text-white/70 hover:text-white transition-colors"
+                >
                   Learn
                 </Link>
               </li>
               <li>
-                <Link href="/glossary" className="text-sm text-white/70 hover:text-white transition-colors">
+                <Link
+                  href="/glossary"
+                  className="text-sm text-white/70 hover:text-white transition-colors"
+                >
                   Glossary
                 </Link>
               </li>
@@ -47,12 +56,18 @@ export function Footer() {
             <h4 className="font-semibold text-sm mb-4 text-white">Resources</h4>
             <ul className="space-y-3">
               <li>
-                <Link href="/about" className="text-sm text-white/70 hover:text-white transition-colors">
+                <Link
+                  href="/about"
+                  className="text-sm text-white/70 hover:text-white transition-colors"
+                >
                   About
                 </Link>
               </li>
               <li>
-                <Link href="/onboarding" className="text-sm text-white/70 hover:text-white transition-colors">
+                <Link
+                  href="/onboarding"
+                  className="text-sm text-white/70 hover:text-white transition-colors"
+                >
                   Get Started
                 </Link>
               </li>
@@ -71,7 +86,9 @@ export function Footer() {
 
           {/* Protocols */}
           <div>
-            <h4 className="font-semibold text-sm mb-4 text-white">Powered By</h4>
+            <h4 className="font-semibold text-sm mb-4 text-white">
+              Powered By
+            </h4>
             <ul className="space-y-3">
               <li>
                 <a

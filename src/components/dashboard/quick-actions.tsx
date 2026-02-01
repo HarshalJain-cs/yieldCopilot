@@ -1,7 +1,12 @@
 "use client";
 
+import {
+  ArrowDownToLine,
+  ArrowLeftRight,
+  ArrowUpFromLine,
+  Bell,
+} from "lucide-react";
 import { GlassCard } from "./glass-card";
-import { ArrowDownToLine, ArrowUpFromLine, ArrowLeftRight, Bell } from "lucide-react";
 
 export function QuickActions() {
   const actions = [
@@ -37,6 +42,7 @@ export function QuickActions() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {actions.map((action) => (
           <button
+            type="button"
             key={action.label}
             className="flex flex-col items-center gap-2 p-4 rounded-xl bg-[var(--glass-bg)] hover:bg-[var(--glass-bg-hover)] border border-[var(--glass-border)] transition-all duration-200 hover:scale-[1.02] group"
           >

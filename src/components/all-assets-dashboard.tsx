@@ -2,20 +2,21 @@
 
 /**
  * All Assets Dashboard
- * 
+ *
  * Displays ALL Aave V3 Ethereum assets with:
  * - Dynamic fetching from contract (no hardcoding)
  * - Category filters (Stablecoins, LSTs, BTC, Governance)
  * - Sorting by APY
  * - Event-driven updates
- * 
+ *
  * This is the DeFi Llama competitor dashboard.
  */
 
 import { useState } from "react";
-import { useAllAssetsYields } from "@/hooks/use-all-assets-yields";
-import type { AssetYieldData } from "@/lib/dynamic-fetcher";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -24,11 +25,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
+import { useAllAssetsYields } from "@/hooks/use-all-assets-yields";
 
-type CategoryFilter = "All" | "Stablecoin" | "ETH & LST" | "BTC" | "Governance" | "Other";
+type CategoryFilter =
+  | "All"
+  | "Stablecoin"
+  | "ETH & LST"
+  | "BTC"
+  | "Governance"
+  | "Other";
 
 // Format APY percentage
 function formatAPY(apy: number): string {
@@ -44,33 +49,37 @@ function formatUtilization(rate: number): string {
 // Category badge colors
 function getCategoryColor(category: string): string {
   const colors: Record<string, string> = {
-    "Stablecoin": "bg-green-600",
+    Stablecoin: "bg-green-600",
     "ETH & LST": "bg-blue-600",
-    "BTC": "bg-orange-600",
-    "Governance": "bg-purple-600",
-    "Other": "bg-gray-600",
+    BTC: "bg-orange-600",
+    Governance: "bg-purple-600",
+    Other: "bg-gray-600",
   };
   return colors[category] || "bg-gray-600";
 }
 
 export function AllAssetsDashboard() {
-  const { 
-    data: assets, 
-    loading, 
-    error, 
-    lastFetched, 
+  const {
+    data: assets,
+    loading,
+    error,
+    lastFetched,
     lastEvent,
     eventCount,
     assetCount,
-    refetch 
+    refetch,
   } = useAllAssetsYields();
 
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("All");
-  const [sortBy, setSortBy] = useState<"supplyAPY" | "borrowAPY" | "utilization">("supplyAPY");
+  const [sortBy, setSortBy] = useState<
+    "supplyAPY" | "borrowAPY" | "utilization"
+  >("supplyAPY");
 
   // Filter and sort assets
   const filteredAssets = assets
-    .filter((asset) => categoryFilter === "All" || asset.category === categoryFilter)
+    .filter(
+      (asset) => categoryFilter === "All" || asset.category === categoryFilter,
+    )
     .sort((a, b) => {
       if (sortBy === "supplyAPY") return b.supplyAPY - a.supplyAPY;
       if (sortBy === "borrowAPY") return b.borrowAPY - a.borrowAPY;
@@ -81,22 +90,32 @@ export function AllAssetsDashboard() {
   const bestYield = filteredAssets.length > 0 ? filteredAssets[0] : null;
 
   // Category counts
-  const categoryCounts = assets.reduce((acc, asset) => {
-    acc[asset.category] = (acc[asset.category] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  const categoryCounts = assets.reduce(
+    (acc, asset) => {
+      acc[asset.category] = (acc[asset.category] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 
   if (error) {
     return (
       <Card className="w-full">
         <CardHeader>
-          <CardTitle className="text-lg font-medium">Aave V3 All Assets</CardTitle>
+          <CardTitle className="text-lg font-medium">
+            Aave V3 All Assets
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-destructive">
             Error fetching data: {error.message}
           </p>
-          <Button onClick={refetch} variant="outline" size="sm" className="mt-2">
+          <Button
+            onClick={refetch}
+            variant="outline"
+            size="sm"
+            className="mt-2"
+          >
             Retry
           </Button>
         </CardContent>
@@ -128,7 +147,16 @@ export function AllAssetsDashboard() {
 
         {/* Category Filters */}
         <div className="flex flex-wrap gap-2 mt-4">
-          {(["All", "Stablecoin", "ETH & LST", "BTC", "Governance", "Other"] as CategoryFilter[]).map((cat) => (
+          {(
+            [
+              "All",
+              "Stablecoin",
+              "ETH & LST",
+              "BTC",
+              "Governance",
+              "Other",
+            ] as CategoryFilter[]
+          ).map((cat) => (
             <Button
               key={cat}
               variant={categoryFilter === cat ? "default" : "outline"}
@@ -155,7 +183,11 @@ export function AllAssetsDashboard() {
               className="h-6 text-xs"
               onClick={() => setSortBy(sort)}
             >
-              {sort === "supplyAPY" ? "Supply APY" : sort === "borrowAPY" ? "Borrow APY" : "Utilization"}
+              {sort === "supplyAPY"
+                ? "Supply APY"
+                : sort === "borrowAPY"
+                  ? "Borrow APY"
+                  : "Utilization"}
             </Button>
           ))}
         </div>
@@ -167,7 +199,8 @@ export function AllAssetsDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">
-                  Best {categoryFilter === "All" ? "Overall" : categoryFilter} Supply APY
+                  Best {categoryFilter === "All" ? "Overall" : categoryFilter}{" "}
+                  Supply APY
                 </p>
                 <p className="text-2xl font-bold text-green-600 dark:text-green-400">
                   {formatAPY(bestYield.supplyAPY)}
@@ -178,7 +211,9 @@ export function AllAssetsDashboard() {
                   <span className="text-2xl">{bestYield.icon}</span>
                   <div>
                     <p className="font-semibold">{bestYield.symbol}</p>
-                    <Badge className={`text-xs ${getCategoryColor(bestYield.category)}`}>
+                    <Badge
+                      className={`text-xs ${getCategoryColor(bestYield.category)}`}
+                    >
                       {bestYield.category}
                     </Badge>
                   </div>
@@ -228,7 +263,7 @@ export function AllAssetsDashboard() {
                 : filteredAssets.map((asset, index) => {
                     const isBest = asset.symbol === bestYield?.symbol;
                     const lastUpdateTime = new Date(asset.lastUpdated * 1000);
-                    
+
                     return (
                       <TableRow
                         key={asset.address}
@@ -255,7 +290,9 @@ export function AllAssetsDashboard() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Badge className={`text-xs ${getCategoryColor(asset.category)}`}>
+                          <Badge
+                            className={`text-xs ${getCategoryColor(asset.category)}`}
+                          >
                             {asset.category}
                           </Badge>
                         </TableCell>
@@ -263,7 +300,9 @@ export function AllAssetsDashboard() {
                           {formatAPY(asset.supplyAPY)}
                         </TableCell>
                         <TableCell className="text-right font-mono text-orange-600 dark:text-orange-400">
-                          {asset.borrowingEnabled ? formatAPY(asset.borrowAPY) : "—"}
+                          {asset.borrowingEnabled
+                            ? formatAPY(asset.borrowAPY)
+                            : "—"}
                         </TableCell>
                         <TableCell className="text-right font-mono text-muted-foreground">
                           {formatUtilization(asset.utilizationRate)}

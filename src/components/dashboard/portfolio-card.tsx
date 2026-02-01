@@ -1,7 +1,7 @@
 "use client";
 
+import { ArrowUpRight, TrendingUp, Wallet } from "lucide-react";
 import { GlassCard } from "./glass-card";
-import { TrendingUp, Wallet, ArrowUpRight } from "lucide-react";
 
 interface PortfolioCardProps {
   totalValue: number;
@@ -29,11 +29,16 @@ export function PortfolioCard({
             </div>
             <div>
               <h2 className="text-lg font-semibold">Portfolio Overview</h2>
-              <p className="text-sm text-muted-foreground">{assetCount} assets tracked</p>
+              <p className="text-sm text-muted-foreground">
+                {assetCount} assets tracked
+              </p>
             </div>
           </div>
 
-          <button className="flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--accent-lavender)] text-[var(--brand-lavender-deep)] text-sm font-medium hover:bg-[var(--brand-lavender)] hover:text-white transition-colors">
+          <button
+            type="button"
+            className="flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--accent-lavender)] text-[var(--brand-lavender-deep)] text-sm font-medium hover:bg-[var(--brand-lavender)] hover:text-white transition-colors"
+          >
             View Details
             <ArrowUpRight className="w-4 h-4" />
           </button>
@@ -44,7 +49,8 @@ export function PortfolioCard({
           <p className="text-sm text-muted-foreground mb-2">Total Value</p>
           <div className="flex items-baseline gap-4">
             <span className="text-5xl font-bold text-data">
-              ${totalValue.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+              $
+              {totalValue.toLocaleString("en-US", { minimumFractionDigits: 2 })}
             </span>
             <div
               className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${
@@ -53,7 +59,9 @@ export function PortfolioCard({
                   : "bg-red-100 text-red-700"
               }`}
             >
-              <TrendingUp className={`w-4 h-4 ${!isPositive && "rotate-180"}`} />
+              <TrendingUp
+                className={`w-4 h-4 ${!isPositive && "rotate-180"}`}
+              />
               {isPositive ? "+" : ""}
               {percentChange.toFixed(2)}%
             </div>
@@ -66,7 +74,10 @@ export function PortfolioCard({
             <div>
               <p className="text-sm text-muted-foreground">Total Earnings</p>
               <p className="text-2xl font-semibold text-data text-green-600">
-                +${totalEarnings.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                +$
+                {totalEarnings.toLocaleString("en-US", {
+                  minimumFractionDigits: 2,
+                })}
               </p>
             </div>
 

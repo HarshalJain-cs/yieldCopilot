@@ -1,21 +1,24 @@
 "use client";
 
 import { ConnectButton, useActiveAccount } from "thirdweb/react";
-import { thirdwebClient } from "@/lib/thirdweb";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getChainConfig, type SupportedChainId } from "@/lib/chains-config";
+import { thirdwebClient } from "@/lib/thirdweb";
 
 interface WalletConnectProps {
   chainId?: SupportedChainId;
   variant?: "default" | "compact";
 }
 
-export function WalletConnect({ chainId = 'sepolia', variant = 'compact' }: WalletConnectProps) {
+export function WalletConnect({
+  chainId = "sepolia",
+  variant = "compact",
+}: WalletConnectProps) {
   const account = useActiveAccount();
   const config = getChainConfig(chainId);
 
   // Compact variant for navbar
-  if (variant === 'compact') {
+  if (variant === "compact") {
     return (
       <ConnectButton
         client={thirdwebClient}

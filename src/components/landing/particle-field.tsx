@@ -32,7 +32,10 @@ export function ParticleField() {
     window.addEventListener("resize", resize);
 
     // Initialize particles
-    const particleCount = Math.min(50, Math.floor((window.innerWidth * window.innerHeight) / 20000));
+    const particleCount = Math.min(
+      50,
+      Math.floor((window.innerWidth * window.innerHeight) / 20000),
+    );
     particlesRef.current = Array.from({ length: particleCount }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,

@@ -4,9 +4,16 @@
  * Core functions to deposit and withdraw from Aave pools
  */
 
-import { prepareContractCall, getContract, type ThirdwebClient } from 'thirdweb';
-import type { Chain } from 'thirdweb/chains';
-import { getChainConfig, type SupportedChainId, TOKEN_ADDRESSES } from './chains-config';
+import {
+  getContract,
+  prepareContractCall,
+  type ThirdwebClient,
+} from "thirdweb";
+import {
+  getChainConfig,
+  type SupportedChainId,
+  TOKEN_ADDRESSES,
+} from "./chains-config";
 
 // Export for backward compatibility
 export { TOKEN_ADDRESSES };
@@ -18,7 +25,7 @@ export function prepareApproveTransaction(
   client: ThirdwebClient,
   tokenAddress: string,
   amount: bigint,
-  chainId: SupportedChainId = 'mainnet'
+  chainId: SupportedChainId = "mainnet",
 ) {
   const config = getChainConfig(chainId);
   const tokenContract = getContract({
@@ -29,7 +36,7 @@ export function prepareApproveTransaction(
 
   return prepareContractCall({
     contract: tokenContract,
-    method: 'function approve(address spender, uint256 amount) returns (bool)',
+    method: "function approve(address spender, uint256 amount) returns (bool)",
     params: [config.aavePool, amount],
   });
 }
@@ -42,7 +49,7 @@ export function prepareSupplyTransaction(
   tokenAddress: string,
   amount: bigint,
   userAddress: string,
-  chainId: SupportedChainId = 'mainnet'
+  chainId: SupportedChainId = "mainnet",
 ) {
   const config = getChainConfig(chainId);
   const aaveContract = getContract({
@@ -53,7 +60,8 @@ export function prepareSupplyTransaction(
 
   return prepareContractCall({
     contract: aaveContract,
-    method: 'function supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode)',
+    method:
+      "function supply(address asset, uint256 amount, address onBehalfOf, uint16 referralCode)",
     params: [tokenAddress, amount, userAddress, 0], // referralCode = 0
   });
 }
@@ -66,7 +74,7 @@ export function prepareWithdrawTransaction(
   tokenAddress: string,
   amount: bigint,
   userAddress: string,
-  chainId: SupportedChainId = 'mainnet'
+  chainId: SupportedChainId = "mainnet",
 ) {
   const config = getChainConfig(chainId);
   const aaveContract = getContract({
@@ -76,13 +84,17 @@ export function prepareWithdrawTransaction(
   });
 
   // Use max uint256 to withdraw all
-  const withdrawAmount = amount === BigInt(0)
-    ? BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
-    : amount;
+  const withdrawAmount =
+    amount === BigInt(0)
+      ? BigInt(
+          "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        )
+      : amount;
 
   return prepareContractCall({
     contract: aaveContract,
-    method: 'function withdraw(address asset, uint256 amount, address to) returns (uint256)',
+    method:
+      "function withdraw(address asset, uint256 amount, address to) returns (uint256)",
     params: [tokenAddress, withdrawAmount, userAddress],
   });
 }
@@ -94,7 +106,7 @@ export function prepareWithdrawTransaction(
 export function getATokenContract(
   client: ThirdwebClient,
   aTokenAddress: string,
-  chainId: SupportedChainId = 'mainnet'
+  chainId: SupportedChainId = "mainnet",
 ) {
   const config = getChainConfig(chainId);
   return getContract({
@@ -108,8 +120,8 @@ export function getATokenContract(
  * Helper to convert token amount to proper decimals
  */
 export function parseTokenAmount(amount: string, decimals: number): bigint {
-  const [whole, fraction = ''] = amount.split('.');
-  const paddedFraction = fraction.padEnd(decimals, '0').slice(0, decimals);
+  const [whole, fraction = ""] = amount.split(".");
+  const paddedFraction = fraction.padEnd(decimals, "0").slice(0, decimals);
   return BigInt(whole + paddedFraction);
 }
 
@@ -117,8 +129,8 @@ export function parseTokenAmount(amount: string, decimals: number): bigint {
  * Helper to format token amount from wei
  */
 export function formatTokenAmount(amount: bigint, decimals: number): string {
-  const str = amount.toString().padStart(decimals + 1, '0');
-  const whole = str.slice(0, -decimals) || '0';
-  const fraction = str.slice(-decimals).replace(/0+$/, '');
+  const str = amount.toString().padStart(decimals + 1, "0");
+  const whole = str.slice(0, -decimals) || "0";
+  const fraction = str.slice(-decimals).replace(/0+$/, "");
   return fraction ? `${whole}.${fraction}` : whole;
 }

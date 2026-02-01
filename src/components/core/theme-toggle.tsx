@@ -1,8 +1,8 @@
 "use client";
 
+import { Moon, Sun } from "lucide-react";
 import { useEffect } from "react";
 import { useThemeStore } from "@/stores/theme-store";
-import { Moon, Sun } from "lucide-react";
 
 export function ThemeToggle() {
   const { theme, toggleTheme } = useThemeStore();
@@ -18,6 +18,7 @@ export function ThemeToggle() {
 
   return (
     <button
+      type="button"
       onClick={toggleTheme}
       className="glass-button p-2 rounded-full transition-all duration-300 hover:scale-110"
       aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}

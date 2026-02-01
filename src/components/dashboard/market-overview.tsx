@@ -1,7 +1,7 @@
 "use client";
 
+import { ExternalLink, TrendingDown, TrendingUp } from "lucide-react";
 import { GlassCard } from "./glass-card";
-import { ExternalLink, TrendingUp, TrendingDown } from "lucide-react";
 
 interface MarketAsset {
   symbol: string;

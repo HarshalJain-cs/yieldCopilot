@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface Position {
   x: number;
@@ -94,7 +94,8 @@ export function CustomCursor() {
           transform: `translate(-50%, -50%) scale(${isClicking ? 0.9 : 1})`,
           opacity: isVisible ? 1 : 0,
           border: "2px solid var(--brand-lavender)",
-          boxShadow: "0 0 15px var(--glow-lavender), 0 0 30px var(--glow-lavender)",
+          boxShadow:
+            "0 0 15px var(--glow-lavender), 0 0 30px var(--glow-lavender)",
         }}
       />
 

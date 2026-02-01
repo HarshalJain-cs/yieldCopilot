@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { ArrowDownRight } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { ArrowDownRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export function EyeAnimation() {
   const router = useRouter();
@@ -56,8 +56,10 @@ export function EyeAnimation() {
     const buttonRect = enterButtonRef.current.getBoundingClientRect();
     const containerRect = containerRef.current.getBoundingClientRect();
 
-    const buttonCenterX = buttonRect.left + buttonRect.width / 2 - containerRect.left;
-    const buttonCenterY = buttonRect.top + buttonRect.height / 2 - containerRect.top;
+    const buttonCenterX =
+      buttonRect.left + buttonRect.width / 2 - containerRect.left;
+    const buttonCenterY =
+      buttonRect.top + buttonRect.height / 2 - containerRect.top;
 
     const dx = mousePositionRef.current.x - buttonCenterX;
     const dy = mousePositionRef.current.y - buttonCenterY;
@@ -68,7 +70,10 @@ export function EyeAnimation() {
   // Update eyelid openness based on proximity
   const updateEyelidTarget = useCallback(() => {
     const distance = calculateDistanceToButton();
-    const openness = Math.max(0, Math.min(100, (1 - distance / PROXIMITY_RADIUS) * 100));
+    const openness = Math.max(
+      0,
+      Math.min(100, (1 - distance / PROXIMITY_RADIUS) * 100),
+    );
     targetEyelidOpennessRef.current = openness;
   }, [calculateDistanceToButton]);
 
@@ -117,24 +122,26 @@ export function EyeAnimation() {
       const rect = containerRef.current.getBoundingClientRect();
       mousePositionRef.current = {
         x: e.clientX - rect.left,
-        y: e.clientY - rect.top
+        y: e.clientY - rect.top,
       };
 
       updateEyePosition();
       updateEyelidTarget();
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [updateEyePosition, updateEyelidTarget]);
 
   const handleEnterClick = () => {
     // Check if user has completed onboarding
-    const hasCompletedOnboarding = localStorage.getItem('yieldx-onboarding-complete');
-    if (hasCompletedOnboarding === 'true') {
-      router.push('/dashboard');
+    const hasCompletedOnboarding = localStorage.getItem(
+      "yieldx-onboarding-complete",
+    );
+    if (hasCompletedOnboarding === "true") {
+      router.push("/dashboard");
     } else {
-      router.push('/onboarding');
+      router.push("/onboarding");
     }
   };
 
@@ -153,6 +160,7 @@ export function EyeAnimation() {
           height="233.3"
           viewBox="0 0 311.3 233.3"
           className="w-[250px] h-auto md:w-[311px]"
+          aria-hidden="true"
         >
           <defs>
             <clipPath id="mask-left">
@@ -190,9 +198,14 @@ export function EyeAnimation() {
 
           {/* Left Eye Content with Clip */}
           <g clipPath="url(#mask-left)">
-            <g ref={leftEyeRef} style={{ transition: 'transform 0.1s ease-out' }}>
+            <g
+              ref={leftEyeRef}
+              style={{ transition: "transform 0.1s ease-out" }}
+            >
               {/* Normal Eye (pupil) */}
-              <g className={`transition-opacity duration-300 ${isHoveringEnter ? 'opacity-0' : 'opacity-100'}`}>
+              <g
+                className={`transition-opacity duration-300 ${isHoveringEnter ? "opacity-0" : "opacity-100"}`}
+              >
                 <ellipse
                   transform="matrix(0.2938 -0.9559 0.9559 0.2938 -24.3184 186.5732)"
                   className="fill-foreground"
@@ -205,7 +218,7 @@ export function EyeAnimation() {
               </g>
               {/* Heart (shown on hover) */}
               <path
-                className={`transition-opacity duration-300 ${isHoveringEnter ? 'opacity-100' : 'opacity-0'}`}
+                className={`transition-opacity duration-300 ${isHoveringEnter ? "opacity-100" : "opacity-0"}`}
                 fill="#FF4E1B"
                 d="M131.8,98.8c-0.9-2.8-3-5.3-5.8-6.2c-4.1-1.3-9.1,1.2-11.5,4.6c-1.5,2.1-2.1,4.6-2.9,7
                 c-0.2,0.8-0.8,4-1.8,2.2c-2.2-3.7-6.4-6.2-10.7-4.7c-3.2,1.1-5.2,4.3-5.9,7.4c-1,5,1.4,9.9,4.9,13.4c2.6,2.6,5.7,4.6,8.9,6.5
@@ -225,7 +238,7 @@ export function EyeAnimation() {
               strokeWidth="3"
               strokeMiterlimit="9.9999"
               className="text-foreground"
-              style={{ transform: 'translateY(0%)' }}
+              style={{ transform: "translateY(0%)" }}
             />
             {/* Bottom Eyelid */}
             <rect
@@ -239,7 +252,7 @@ export function EyeAnimation() {
               strokeWidth="3"
               strokeMiterlimit="9.9999"
               className="text-foreground"
-              style={{ transform: 'translateY(0%)' }}
+              style={{ transform: "translateY(0%)" }}
             />
           </g>
 
@@ -261,9 +274,14 @@ export function EyeAnimation() {
 
           {/* Right Eye Content with Clip */}
           <g clipPath="url(#mask-right)">
-            <g ref={rightEyeRef} style={{ transition: 'transform 0.1s ease-out' }}>
+            <g
+              ref={rightEyeRef}
+              style={{ transition: "transform 0.1s ease-out" }}
+            >
               {/* Normal Eye (pupil) */}
-              <g className={`transition-opacity duration-300 ${isHoveringEnter ? 'opacity-0' : 'opacity-100'}`}>
+              <g
+                className={`transition-opacity duration-300 ${isHoveringEnter ? "opacity-0" : "opacity-100"}`}
+              >
                 <ellipse
                   transform="matrix(0.2938 -0.9559 0.9559 0.2938 23.4151 259.1791)"
                   className="fill-foreground"
@@ -276,7 +294,7 @@ export function EyeAnimation() {
               </g>
               {/* Heart (shown on hover) */}
               <path
-                className={`transition-opacity duration-300 ${isHoveringEnter ? 'opacity-100' : 'opacity-0'}`}
+                className={`transition-opacity duration-300 ${isHoveringEnter ? "opacity-100" : "opacity-0"}`}
                 fill="#FF4E1B"
                 d="M158.8,104.8c0.1-7,5.7-13.4,13.1-12.3c2.6,0.4,4.9,1.7,6.8,3.4c1.2,1.1,4,7.1,5.5,4.2
                 c2.4-4.8,7.4-9,12.8-9.9c6.5-1.1,11.6,3.8,12.9,9.9c1.6,7.7-3.9,14.6-8.8,19.9c-5.7,6.1-12.8,11.8-15.3,20
@@ -295,7 +313,7 @@ export function EyeAnimation() {
               strokeWidth="3"
               strokeMiterlimit="9.9999"
               className="text-foreground"
-              style={{ transform: 'translateY(0%)' }}
+              style={{ transform: "translateY(0%)" }}
             />
             {/* Bottom Eyelid */}
             <rect
@@ -309,7 +327,7 @@ export function EyeAnimation() {
               strokeWidth="3"
               strokeMiterlimit="9.9999"
               className="text-foreground"
-              style={{ transform: 'translateY(0%)' }}
+              style={{ transform: "translateY(0%)" }}
             />
           </g>
         </svg>
@@ -322,6 +340,7 @@ export function EyeAnimation() {
 
       {/* Enter Button */}
       <button
+        type="button"
         ref={enterButtonRef}
         onClick={handleEnterClick}
         onMouseEnter={() => setIsHoveringEnter(true)}
@@ -330,9 +349,10 @@ export function EyeAnimation() {
           group relative px-10 py-4 rounded-full border-[2px] border-foreground
           flex items-center gap-3 text-lg font-medium
           transition-all duration-300 ease-out
-          ${isHoveringEnter
-            ? 'bg-foreground text-background'
-            : 'bg-background/80 text-foreground hover:bg-background'
+          ${
+            isHoveringEnter
+              ? "bg-foreground text-background"
+              : "bg-background/80 text-foreground hover:bg-background"
           }
         `}
       >
@@ -340,14 +360,15 @@ export function EyeAnimation() {
         <ArrowDownRight
           className={`
             w-5 h-5 transition-transform duration-300
-            ${isHoveringEnter ? 'translate-x-1 translate-y-1' : ''}
+            ${isHoveringEnter ? "translate-x-1 translate-y-1" : ""}
           `}
         />
       </button>
 
       {/* Skip to Dashboard Link (for returning users) */}
       <button
-        onClick={() => router.push('/dashboard')}
+        type="button"
+        onClick={() => router.push("/dashboard")}
         className="absolute bottom-12 text-sm tracking-wider uppercase text-foreground/60 hover:text-foreground transition-colors duration-300 underline underline-offset-4"
       >
         Skip to Dashboard

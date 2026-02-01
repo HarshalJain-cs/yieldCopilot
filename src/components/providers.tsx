@@ -2,9 +2,9 @@
 
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
-import { WalletProvider } from "@/components/wallet-provider";
 import { CircleCursor } from "@/components/core/circle-cursor";
 import { LiquidBackground } from "@/components/core/liquid-background";
+import { WalletProvider } from "@/components/wallet-provider";
 
 interface ProvidersProps {
   children: ReactNode;
@@ -16,7 +16,8 @@ export function Providers({ children }: ProvidersProps) {
   useEffect(() => {
     // Check for dark mode
     const checkDarkMode = () => {
-      const isDark = document.documentElement.classList.contains("dark") ||
+      const isDark =
+        document.documentElement.classList.contains("dark") ||
         window.matchMedia("(prefers-color-scheme: dark)").matches;
       setIsDarkMode(isDark);
     };
@@ -25,7 +26,10 @@ export function Providers({ children }: ProvidersProps) {
 
     // Observer for class changes on html element
     const observer = new MutationObserver(checkDarkMode);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
 
     // Listen for system preference changes
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");

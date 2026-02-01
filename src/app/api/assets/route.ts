@@ -10,22 +10,22 @@
  * - category: Filter by category (e.g., "Stablecoin", "Volatile")
  */
 
-import { NextResponse } from 'next/server';
-import { TRACKED_ASSETS } from '@/lib/constants';
+import { NextResponse } from "next/server";
+import { TRACKED_ASSETS } from "@/lib/constants";
 import {
   checkRateLimit,
-  getClientIdentifier,
   createRateLimitResponse,
-} from '@/lib/rate-limit';
+  getClientIdentifier,
+} from "@/lib/rate-limit";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   // Rate limiting
   const identifier = getClientIdentifier(request);
   const { success, headers: rateLimitHeaders } = await checkRateLimit(
     identifier,
-    'free'
+    "free",
   );
 
   if (!success) {
@@ -34,15 +34,14 @@ export async function GET(request: Request) {
 
   // Parse query params
   const { searchParams } = new URL(request.url);
-  const categoryFilter = searchParams.get('category');
+  const categoryFilter = searchParams.get("category");
 
   let assets = TRACKED_ASSETS;
 
   // Apply category filter
   if (categoryFilter) {
     assets = assets.filter(
-      (asset) =>
-        asset.category.toLowerCase() === categoryFilter.toLowerCase()
+      (asset) => asset.category.toLowerCase() === categoryFilter.toLowerCase(),
     );
   }
 
@@ -61,6 +60,6 @@ export async function GET(request: Request) {
         name: asset.name,
       })),
     },
-    { headers: rateLimitHeaders }
+    { headers: rateLimitHeaders },
   );
 }

@@ -1,12 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { ethereum } from "thirdweb/chains";
 import { useActiveAccount } from "thirdweb/react";
 import { getWalletBalance } from "thirdweb/wallets";
-import { ethereum } from "thirdweb/chains";
-import { useEffect, useState } from "react";
-import { thirdwebClient } from "@/lib/thirdweb";
-import { TOKEN_LIST } from "@/lib/constants";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -15,8 +15,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
+import { TOKEN_LIST } from "@/lib/constants";
+import { thirdwebClient } from "@/lib/thirdweb";
 
 interface TokenBalance {
   symbol: string;
@@ -48,9 +48,7 @@ export function TokenBalances() {
           client: thirdwebClient,
           chain: ethereum,
         });
-        setEthBalance(
-          Number(nativeBalance.displayValue).toFixed(4)
-        );
+        setEthBalance(Number(nativeBalance.displayValue).toFixed(4));
 
         // Fetch token balances for our tracked stablecoins
         const tokenBalances: TokenBalance[] = [];
@@ -114,7 +112,9 @@ export function TokenBalances() {
       <CardHeader>
         <CardTitle className="text-lg font-medium flex items-center gap-2">
           Your Assets
-          {loading && <span className="text-xs text-muted-foreground">(Loading...)</span>}
+          {loading && (
+            <span className="text-xs text-muted-foreground">(Loading...)</span>
+          )}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -154,7 +154,9 @@ export function TokenBalances() {
                         <span>{token.icon}</span>
                         <div>
                           <p className="font-medium">{token.symbol}</p>
-                          <p className="text-xs text-muted-foreground">{token.name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {token.name}
+                          </p>
                         </div>
                       </div>
                     </TableCell>
@@ -173,7 +175,9 @@ export function TokenBalances() {
                         <span>{token.icon}</span>
                         <div>
                           <p className="font-medium">{token.symbol}</p>
-                          <p className="text-xs text-muted-foreground">{token.name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {token.name}
+                          </p>
                         </div>
                       </div>
                     </TableCell>

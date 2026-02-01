@@ -7,7 +7,7 @@ const clientId = process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID || "placeholder";
 // Warn but don't crash if missing
 if (!process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID) {
   console.warn(
-    "[thirdweb] Missing NEXT_PUBLIC_THIRDWEB_CLIENT_ID. Wallet features will be limited."
+    "[thirdweb] Missing NEXT_PUBLIC_THIRDWEB_CLIENT_ID. Wallet features will be limited.",
   );
 }
 

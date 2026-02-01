@@ -4,10 +4,10 @@
  * Fetches user's wallet balances and Aave positions
  */
 
-import { getContract } from 'thirdweb';
-import { thirdwebClient } from './thirdweb';
-import { getChainConfig, type SupportedChainId } from './chains-config';
-import { balanceOf } from 'thirdweb/extensions/erc20';
+import { getContract } from "thirdweb";
+import { balanceOf } from "thirdweb/extensions/erc20";
+import { getChainConfig, type SupportedChainId } from "./chains-config";
+import { thirdwebClient } from "./thirdweb";
 
 export interface WalletBalance {
   symbol: string;
@@ -29,7 +29,7 @@ export interface AavePosition {
 export async function getTokenBalance(
   walletAddress: string,
   tokenAddress: string,
-  chainId: SupportedChainId = 'mainnet'
+  chainId: SupportedChainId = "mainnet",
 ): Promise<bigint> {
   try {
     const config = getChainConfig(chainId);
@@ -52,7 +52,7 @@ export async function getTokenBalance(
  */
 export async function getWalletBalances(
   walletAddress: string,
-  chainId: SupportedChainId = 'mainnet'
+  chainId: SupportedChainId = "mainnet",
 ): Promise<WalletBalance[]> {
   const config = getChainConfig(chainId);
   const balances: WalletBalance[] = [];
@@ -60,8 +60,8 @@ export async function getWalletBalances(
   for (const [symbol, address] of Object.entries(config.tokens)) {
     try {
       const balance = await getTokenBalance(walletAddress, address, chainId);
-      const decimals = symbol === 'USDC' || symbol === 'USDT' ? 6 : 18;
-      const formattedBalance = Number(balance) / Math.pow(10, decimals);
+      const decimals = symbol === "USDC" || symbol === "USDT" ? 6 : 18;
+      const formattedBalance = Number(balance) / 10 ** decimals;
 
       balances.push({
         symbol,
@@ -80,16 +80,20 @@ export async function getWalletBalances(
  */
 export async function getAavePositions(
   walletAddress: string,
-  chainId: SupportedChainId = 'mainnet'
+  chainId: SupportedChainId = "mainnet",
 ): Promise<AavePosition[]> {
   const config = getChainConfig(chainId);
   const positions: AavePosition[] = [];
 
   for (const [symbol, aTokenAddress] of Object.entries(config.aTokens)) {
     try {
-      const aTokenBalance = await getTokenBalance(walletAddress, aTokenAddress, chainId);
-      const decimals = symbol === 'USDC' || symbol === 'USDT' ? 6 : 18;
-      const formattedBalance = Number(aTokenBalance) / Math.pow(10, decimals);
+      const aTokenBalance = await getTokenBalance(
+        walletAddress,
+        aTokenAddress,
+        chainId,
+      );
+      const decimals = symbol === "USDC" || symbol === "USDT" ? 6 : 18;
+      const formattedBalance = Number(aTokenBalance) / 10 ** decimals;
 
       if (formattedBalance > 0) {
         positions.push({
@@ -97,7 +101,7 @@ export async function getAavePositions(
           deposited: formattedBalance.toFixed(6),
           aTokenBalance: formattedBalance.toFixed(6),
           currentValue: formattedBalance.toFixed(6), // aTokens increase in value over time
-          earnedInterest: '0.00', // Would need historical data to calculate
+          earnedInterest: "0.00", // Would need historical data to calculate
         });
       }
     } catch (error) {
@@ -113,7 +117,7 @@ export async function getAavePositions(
  */
 export async function getWalletSummary(
   walletAddress: string,
-  chainId: SupportedChainId = 'mainnet'
+  chainId: SupportedChainId = "mainnet",
 ): Promise<string> {
   const [balances, positions] = await Promise.all([
     getWalletBalances(walletAddress, chainId),
@@ -124,13 +128,13 @@ export async function getWalletSummary(
   summary += `Network: ${chainId}\n\n`;
 
   summary += `Token Balances:\n`;
-  balances.forEach(b => {
+  balances.forEach((b) => {
     summary += `- ${b.symbol}: ${b.balance}\n`;
   });
 
   if (positions.length > 0) {
     summary += `\nAave Positions:\n`;
-    positions.forEach(p => {
+    positions.forEach((p) => {
       summary += `- ${p.symbol}: ${p.deposited} deposited (earning interest)\n`;
     });
   } else {

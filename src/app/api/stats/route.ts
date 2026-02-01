@@ -10,17 +10,17 @@
  * - Platform uptime
  */
 
-import { NextResponse } from 'next/server';
-import { getYieldsCache } from '@/lib/redis';
-import { fetchAllAssetsYieldData } from '@/lib/dynamic-fetcher';
-import { getWorkerStatus } from '@/lib/yield-worker';
+import { NextResponse } from "next/server";
+import { fetchAllAssetsYieldData } from "@/lib/dynamic-fetcher";
 import {
   checkRateLimit,
-  getClientIdentifier,
   createRateLimitResponse,
-} from '@/lib/rate-limit';
+  getClientIdentifier,
+} from "@/lib/rate-limit";
+import { getYieldsCache } from "@/lib/redis";
+import { getWorkerStatus } from "@/lib/yield-worker";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   try {
@@ -28,7 +28,7 @@ export async function GET(request: Request) {
     const identifier = getClientIdentifier(request);
     const { success, headers: rateLimitHeaders } = await checkRateLimit(
       identifier,
-      'free'
+      "free",
     );
 
     if (!success) {
@@ -58,10 +58,12 @@ export async function GET(request: Request) {
         });
       }
 
-      const stats = categoryStats.get(asset.category)!;
-      stats.count++;
-      stats.avgSupplyAPY += asset.supplyAPY;
-      stats.avgBorrowAPY += asset.borrowAPY;
+      const stats = categoryStats.get(asset.category);
+      if (stats) {
+        stats.count++;
+        stats.avgSupplyAPY += asset.supplyAPY;
+        stats.avgBorrowAPY += asset.borrowAPY;
+      }
     });
 
     // Calculate averages
@@ -70,22 +72,22 @@ export async function GET(request: Request) {
         category,
         assetCount: stats.count,
         averageSupplyAPY: parseFloat(
-          (stats.avgSupplyAPY / stats.count).toFixed(4)
+          (stats.avgSupplyAPY / stats.count).toFixed(4),
         ),
         averageBorrowAPY: parseFloat(
-          (stats.avgBorrowAPY / stats.count).toFixed(4)
+          (stats.avgBorrowAPY / stats.count).toFixed(4),
         ),
-      })
+      }),
     );
 
     // Overall statistics
     const totalSupplyAPY = assets.reduce(
       (sum, asset) => sum + asset.supplyAPY,
-      0
+      0,
     );
     const totalBorrowAPY = assets.reduce(
       (sum, asset) => sum + asset.borrowAPY,
-      0
+      0,
     );
 
     const workerStatus = getWorkerStatus();
@@ -95,43 +97,43 @@ export async function GET(request: Request) {
         success: true,
         timestamp: new Date().toISOString(),
         platform: {
-          protocol: 'Aave V3',
-          chain: 'ethereum',
+          protocol: "Aave V3",
+          chain: "ethereum",
           chainId: 1,
         },
         overview: {
           totalAssets,
           activeAssets,
           averageSupplyAPY: parseFloat(
-            (totalSupplyAPY / totalAssets).toFixed(4)
+            (totalSupplyAPY / totalAssets).toFixed(4),
           ),
           averageBorrowAPY: parseFloat(
-            (totalBorrowAPY / totalAssets).toFixed(4)
+            (totalBorrowAPY / totalAssets).toFixed(4),
           ),
           highestSupplyAPY: Math.max(...assets.map((a) => a.supplyAPY)),
           lowestSupplyAPY: Math.min(
-            ...assets.filter((a) => a.supplyAPY > 0).map((a) => a.supplyAPY)
+            ...assets.filter((a) => a.supplyAPY > 0).map((a) => a.supplyAPY),
           ),
         },
         categories: categorySummary,
         worker: {
-          status: workerStatus.isRunning ? 'running' : 'stopped',
+          status: workerStatus.isRunning ? "running" : "stopped",
           uptime: workerStatus.uptime,
           totalUpdates: workerStatus.totalUpdates,
           failedUpdates: workerStatus.failedUpdates,
           lastUpdate: workerStatus.lastUpdateTime,
         },
       },
-      { headers: rateLimitHeaders }
+      { headers: rateLimitHeaders },
     );
   } catch (error) {
     return NextResponse.json(
       {
         success: false,
-        error: 'Failed to fetch statistics',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        error: "Failed to fetch statistics",
+        message: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

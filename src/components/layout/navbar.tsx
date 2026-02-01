@@ -1,10 +1,10 @@
 "use client";
 
+import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ThemeToggle } from "@/components/core/theme-toggle";
-import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import { ThemeToggle } from "@/components/core/theme-toggle";
 import { WalletConnectButton } from "@/components/wallet-provider";
 
 const navLinks = [
@@ -24,10 +24,7 @@ export function Navbar() {
         <div className="glass rounded-2xl px-6 py-3">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <Link
-              href="/"
-              className="flex items-center gap-2 group"
-            >
+            <Link href="/" className="flex items-center gap-2 group">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--brand-lavender)] to-[var(--brand-lavender-deep)] flex items-center justify-center shadow-lg group-hover:shadow-[var(--glow-lavender)] transition-shadow duration-300">
                 <span className="text-white font-bold text-lg">Y</span>
               </div>
@@ -42,10 +39,11 @@ export function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${pathname === link.href
-                    ? "bg-[var(--accent-lavender)] text-[var(--brand-lavender-deep)]"
-                    : "text-muted-foreground hover:text-foreground hover:bg-[var(--glass-bg)]"
-                    }`}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    pathname === link.href
+                      ? "bg-[var(--accent-lavender)] text-[var(--brand-lavender-deep)]"
+                      : "text-muted-foreground hover:text-foreground hover:bg-[var(--glass-bg)]"
+                  }`}
                 >
                   {link.label}
                 </Link>
@@ -61,6 +59,7 @@ export function Navbar() {
 
               {/* Mobile menu button */}
               <button
+                type="button"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="md:hidden glass-button p-2 rounded-full"
               >
@@ -82,10 +81,11 @@ export function Navbar() {
                     key={link.href}
                     href={link.href}
                     onClick={() => setIsMenuOpen(false)}
-                    className={`px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${pathname === link.href
-                      ? "bg-[var(--accent-lavender)] text-[var(--brand-lavender-deep)]"
-                      : "text-muted-foreground hover:text-foreground hover:bg-[var(--glass-bg)]"
-                      }`}
+                    className={`px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+                      pathname === link.href
+                        ? "bg-[var(--accent-lavender)] text-[var(--brand-lavender-deep)]"
+                        : "text-muted-foreground hover:text-foreground hover:bg-[var(--glass-bg)]"
+                    }`}
                   >
                     {link.label}
                   </Link>

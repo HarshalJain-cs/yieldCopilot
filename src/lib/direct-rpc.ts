@@ -1,17 +1,17 @@
 /**
  * Direct RPC Yield Fetcher
- * 
+ *
  * This module fetches Aave V3 reserve data DIRECTLY from the blockchain
  * via Thirdweb SDK, bypassing any GraphQL indexing delays.
- * 
+ *
  * Latency: ~100-500ms per call (real-time, every block)
  * vs GraphQL API: ~30-60 second indexing delay
  */
 
 import { getContract, readContract } from "thirdweb";
 import { ethereum } from "thirdweb/chains";
-import { thirdwebClient } from "./thirdweb";
 import { AAVE_V3_POOL_DATA_PROVIDER, TOKENS } from "./constants";
+import { thirdwebClient } from "./thirdweb";
 
 // Aave V3 PoolDataProvider ABI (only the function we need)
 const POOL_DATA_PROVIDER_ABI = [
@@ -20,14 +20,22 @@ const POOL_DATA_PROVIDER_ABI = [
     name: "getReserveData",
     outputs: [
       { internalType: "uint256", name: "unbacked", type: "uint256" },
-      { internalType: "uint256", name: "accruedToTreasuryScaled", type: "uint256" },
+      {
+        internalType: "uint256",
+        name: "accruedToTreasuryScaled",
+        type: "uint256",
+      },
       { internalType: "uint256", name: "totalAToken", type: "uint256" },
       { internalType: "uint256", name: "totalStableDebt", type: "uint256" },
       { internalType: "uint256", name: "totalVariableDebt", type: "uint256" },
       { internalType: "uint256", name: "liquidityRate", type: "uint256" },
       { internalType: "uint256", name: "variableBorrowRate", type: "uint256" },
       { internalType: "uint256", name: "stableBorrowRate", type: "uint256" },
-      { internalType: "uint256", name: "averageStableBorrowRate", type: "uint256" },
+      {
+        internalType: "uint256",
+        name: "averageStableBorrowRate",
+        type: "uint256",
+      },
       { internalType: "uint256", name: "liquidityIndex", type: "uint256" },
       { internalType: "uint256", name: "variableBorrowIndex", type: "uint256" },
       { internalType: "uint256", name: "lastUpdateTimestamp", type: "uint256" },
@@ -67,7 +75,7 @@ export interface ReserveYieldData {
  */
 export async function fetchReserveDataDirect(
   assetAddress: string,
-  assetSymbol: string
+  assetSymbol: string,
 ): Promise<ReserveYieldData> {
   const contract = getContract({
     client: thirdwebClient,
@@ -84,17 +92,24 @@ export async function fetchReserveDataDirect(
 
   // Parse the response
   const [
-    , // unbacked
-    , // accruedToTreasuryScaled
+    ,
+    ,
+    // unbacked
+    // accruedToTreasuryScaled
     totalAToken,
-    , // totalStableDebt
+    ,
+    // totalStableDebt
     totalVariableDebt,
     liquidityRate,
     variableBorrowRate,
-    , // stableBorrowRate
-    , // averageStableBorrowRate
-    , // liquidityIndex
-    , // variableBorrowIndex
+    ,
+    ,
+    ,
+    ,
+    // stableBorrowRate
+    // averageStableBorrowRate
+    // liquidityIndex
+    // variableBorrowIndex
     lastUpdateTimestamp,
   ] = data;
 
@@ -116,7 +131,7 @@ export async function fetchReserveDataDirect(
  */
 export async function fetchAllYieldsDirect(): Promise<ReserveYieldData[]> {
   const promises = Object.values(TOKENS).map((token) =>
-    fetchReserveDataDirect(token.address, token.symbol)
+    fetchReserveDataDirect(token.address, token.symbol),
   );
 
   return Promise.all(promises);
@@ -127,10 +142,10 @@ export async function fetchAllYieldsDirect(): Promise<ReserveYieldData[]> {
  */
 export async function findBestYieldDirect(): Promise<ReserveYieldData | null> {
   const yields = await fetchAllYieldsDirect();
-  
+
   if (yields.length === 0) return null;
-  
+
   return yields.reduce((best, current) =>
-    current.supplyAPY > best.supplyAPY ? current : best
+    current.supplyAPY > best.supplyAPY ? current : best,
   );
 }

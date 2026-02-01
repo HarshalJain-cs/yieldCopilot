@@ -5,11 +5,11 @@
  * Called automatically by Vercel cron or manually for debugging.
  */
 
-import { NextResponse } from 'next/server';
-import { startWorker, getWorkerStatus } from '@/lib/yield-worker';
+import { NextResponse } from "next/server";
+import { getWorkerStatus, startWorker } from "@/lib/yield-worker";
 
-export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 export async function GET() {
   try {
@@ -18,33 +18,33 @@ export async function GET() {
     if (status.isRunning) {
       return NextResponse.json({
         success: true,
-        message: 'Worker already running',
+        message: "Worker already running",
         status,
         timestamp: new Date().toISOString(),
       });
     }
 
     // Start worker
-    console.log('[Init] Starting yield worker...');
+    console.log("[Init] Starting yield worker...");
     await startWorker();
 
     return NextResponse.json({
       success: true,
-      message: 'Worker started successfully',
+      message: "Worker started successfully",
       status: getWorkerStatus(),
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('[Init] Failed to start worker:', error);
+    console.error("[Init] Failed to start worker:", error);
 
     return NextResponse.json(
       {
         success: false,
-        error: 'Failed to initialize worker',
-        message: error instanceof Error ? error.message : 'Unknown error',
+        error: "Failed to initialize worker",
+        message: error instanceof Error ? error.message : "Unknown error",
         timestamp: new Date().toISOString(),
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
