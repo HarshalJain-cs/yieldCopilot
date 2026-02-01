@@ -117,7 +117,7 @@ export default function LandingPage() {
     <div
       ref={containerRef}
       className="min-h-screen w-full flex flex-col items-center justify-center relative overflow-hidden"
-      style={{ backgroundColor: "#FDF8F3" }}
+      style={{ backgroundColor: "#3B82F6" }}
     >
       {/* Eyes SVG */}
       <div className="relative mb-8">
@@ -277,7 +277,7 @@ export default function LandingPage() {
       <div style={{ marginBottom: "2rem", minHeight: "3.5rem" }}>
         <span
           style={{
-            color: "#5a4a42",
+            color: "#000000",
             fontSize: "2.5rem",
             fontWeight: 500,
             letterSpacing: "0.05em",
@@ -292,7 +292,7 @@ export default function LandingPage() {
           pauseDuration={3000}
           fontSize="2.5rem"
           fontWeight={600}
-          textColor="#7c3aed"
+          textColor="#000000"
           cursorColor="#7c3aed"
         />
       </div>

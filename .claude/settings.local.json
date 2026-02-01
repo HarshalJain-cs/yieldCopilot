@@ -5,7 +5,28 @@
       "Bash(wc:*)",
       "Bash(pnpm add:*)",
       "WebSearch",
-      "Bash(pnpm dev)"
+      "Bash(pnpm dev)",
+      "Bash(tree:*)",
+      "Bash(npm install:*)",
+      "Bash(wmic logicaldisk:*)",
+      "Bash(npm run build:*)",
+      "Bash(timeout 30 npm run dev:*)",
+      "Bash(timeout 60 npm run dev:*)",
+      "Bash(timeout 45 npm run dev:*)",
+      "Bash(npx tsc:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill:*)",
+      "Bash(npm run dev:*)",
+      "Bash(timeout /t 8 /nobreak)",
+      "Bash(npm run lint)",
+      "Bash(npx biome check:*)",
+      "Bash(git add:*)",
+      "Bash(git push:*)"
     ]
-  }
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "supabase"
+  ]
 }
